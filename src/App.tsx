@@ -14,7 +14,6 @@ import {
   History,
   Puzzle,
   X,
-  Star,
   Upload,
   Check,
   Settings,
@@ -31,14 +30,6 @@ import {
   Redo,
   Trash2
 } from 'lucide-react'
-
-// Define the SavedResume interface
-interface SavedResume {
-  id: string
-  name: string
-  content: string
-  date: string
-}
 
 export interface ResumeData {
   name: string
@@ -319,21 +310,6 @@ Security Officer | Climate Pledge Arena | Nov 2025 - Mar 2026
 - anticipate and address guest concerns`,
     jobDesc: DEFAULT_JOB_DESCRIPTION,
     optimizedResume: CLASSIC_PROFESSIONAL_DEFAULT_TEXT
-  }
-]
-
-const mockSavedResumes: SavedResume[] = [
-  {
-    id: 'res-1',
-    name: 'Software Developer Resume - Default.txt',
-    content: `VIRADETH ARCH\nv.arch@domain.com | (123) 456-7890\n\nPROFESSIONAL SUMMARY\nSoftware Developer with 5 years of experience building web applications. Skilled in HTML, CSS, JavaScript, React, and Node.js. Experienced in general programming, QA testing, and database management.`,
-    date: '2 hours ago'
-  },
-  {
-    id: 'res-2',
-    name: 'Manual QA Resume - Default.txt',
-    content: `VIRADETH ARCH - QA RESUME\nv.arch@domain.com | (123) 456-7890\n\nPROFESSIONAL SUMMARY\nQuality Assurance Specialist with 4 years of experience checking products, identifying defects, and writing detailed bug reports. Focused on manual testing and reviewing product standards.`,
-    date: '3 days ago'
   }
 ]
 
@@ -780,7 +756,6 @@ export default function App() {
   
   const [resumeText, setResumeText] = useState("")
   const [jobDescriptionText, setJobDescriptionText] = useState("")
-  const [showSavedDropdown, setShowSavedDropdown] = useState(false)
   const [showDownloadDropdown, setShowDownloadDropdown] = useState(false)
   const [activeTab, setActiveTab] = useState('AI Optimizer')
 
@@ -1023,11 +998,6 @@ export default function App() {
       keywordFrequencies
     })
   }, [resumeText, optimizedResumeText, jobDescriptionText, view, resumeData, appliedFixes])
-
-  const handleSavedResumeSelect = (resume: SavedResume) => {
-    setResumeText(convertPlainResumeToClassicHTML(resume.content))
-    setShowSavedDropdown(false)
-  }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -3435,38 +3405,6 @@ export default function App() {
                     <h4 className="font-bold text-sm text-slate-800 tracking-wide">
                       Step 1: Upload a resume
                     </h4>
-                    
-                    {/* Saved Resumes Dropdown */}
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowSavedDropdown(!showSavedDropdown)}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-[#05a46c] hover:text-[#048e5d] transition-colors py-1 px-2 rounded hover:bg-[#e6f6f1]"
-                      >
-                        <Star className="w-3.5 h-3.5 fill-current" />
-                        <span>Saved Resumes</span>
-                      </button>
-
-                      {showSavedDropdown && (
-                        <>
-                          <div className="fixed inset-0 z-20" onClick={() => setShowSavedDropdown(false)}></div>
-                          <div className="absolute right-0 mt-1.5 w-72 bg-white border border-slate-200 rounded-lg shadow-xl z-30 py-1.5">
-                            <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider border-b border-slate-100">
-                              Select a saved resume
-                            </div>
-                            {mockSavedResumes.map((resume) => (
-                              <button
-                                key={resume.id}
-                                onClick={() => handleSavedResumeSelect(resume)}
-                                className="w-full text-left px-3 py-2.5 hover:bg-slate-50 transition-colors flex flex-col border-b border-slate-50 last:border-0"
-                              >
-                                <span className="text-xs font-semibold text-slate-700 truncate w-full">{resume.name}</span>
-                                <span className="text-[10px] text-slate-400 mt-0.5">Uploaded {resume.date}</span>
-                              </button>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
                   </div>
 
                   {/* Resume textarea */}
