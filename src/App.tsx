@@ -1775,9 +1775,12 @@ export default function App() {
       const actionBars = clone.querySelectorAll('.opacity-0, [class*="opacity-0"]')
       actionBars.forEach(bar => bar.remove())
 
-      // 2. Wipe web-only visual left border accent bars from printing
+      // 2. Wipe web-only visual left border accent bars and print-hidden debugging/boundary helpers from printing
       const accentBars = clone.querySelectorAll('.border-accent-bar')
       accentBars.forEach(bar => bar.remove())
+
+      const printHiddenElements = clone.querySelectorAll('.print\\:hidden, .print-hidden, [class*="print:hidden"]')
+      printHiddenElements.forEach(el => el.remove())
 
       // 3. Convert job header flex rows into borderless 2-column tables to lock left and right elements in place
       const jobHeaders = clone.querySelectorAll('.job-header-row')
@@ -1828,7 +1831,15 @@ export default function App() {
       clone.style.transform = 'scale(0.96)'
       clone.style.transformOrigin = 'top center'
 
-      // 6. Guarantee strict data isolation and clean up bullet points to prevent nested loop contamination
+      // 6. Append dynamic CSS styles inside the print clone to enforce structural dividers spanning across full-width
+      const printStyles = document.createElement('style')
+      printStyles.innerHTML = `
+        hr { width: 100% !important; display: block !important; border-top: 1px solid #cbd5e1 !important; margin: 4px 0 12px 0 !important; }
+        .print-hidden, .print\\:hidden, [class*="print:hidden"] { display: none !important; }
+      `
+      clone.appendChild(printStyles)
+
+      // 7. Guarantee strict data isolation and clean up bullet points to prevent nested loop contamination
       const uls = clone.querySelectorAll('ul')
       if (uls.length >= 2) {
         const job1Ul = uls[0]
