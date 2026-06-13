@@ -802,6 +802,7 @@ export default function App() {
 
   // Structured Resume Data State Management
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData)
+  const [appliedFixes, setAppliedFixes] = useState<string[]>([])
   const [pastStates, setPastStates] = useState<ResumeData[]>([])
   const [futureStates, setFutureStates] = useState<ResumeData[]>([])
   const lastSavedDataRef = useRef<ResumeData>(initialResumeData)
@@ -886,33 +887,37 @@ export default function App() {
 
     // 4. Advanced "Fine-Tooth Comb" Gaps Checks
     const isDuplicateContactDetected = 
-      (rLower.includes('viradeth arch') || rLower.includes('v.arch@domain.com')) &&
-      (rLower.includes('xay-ananh') || rLower.includes('viradeth xay-ananh'));
+      ((rLower.includes('viradeth arch') || rLower.includes('v.arch@domain.com')) &&
+      (rLower.includes('xay-ananh') || rLower.includes('viradeth xay-ananh'))) && !appliedFixes.includes('header');
 
     const hasLoungeMonitoring = 
       rLower.includes('seating availability') || 
       rLower.includes('service flow') || 
       rLower.includes('guest well-being') ||
-      rLower.includes('lounge monitoring');
+      rLower.includes('lounge monitoring') ||
+      appliedFixes.includes('loungeMonitoring');
 
     const hasLoungeChecklists = 
       rLower.includes('shift logs') || 
       rLower.includes('memo books') ||
-      rLower.includes('operational checklists');
+      rLower.includes('operational checklists') ||
+      appliedFixes.includes('loungeChecklists');
 
     const hasSafetyCompliance = 
       rLower.includes('report accidents') || 
       rLower.includes('reported accidents') || 
       rLower.includes('unsafe work conditions') ||
-      rLower.includes('injuries');
+      rLower.includes('injuries') ||
+      appliedFixes.includes('safetyCompliance');
 
     const hasSwapAssetsPhrase = 
-      rLower.includes('maintain confidentiality') && 
-      rLower.includes('protect company assets');
+      (rLower.includes('maintain confidentiality') && rLower.includes('protect company assets')) ||
+      appliedFixes.includes('swapAssets');
 
     const hasSwapAnticipatePhrase = 
       rLower.includes("guests' service needs") || 
-      rLower.includes("guests service needs");
+      rLower.includes("guests service needs") ||
+      appliedFixes.includes('swapAnticipate');
 
     // 5. Track exact frequencies for extracted keywords
     const keywordFrequencies: Record<string, { resumeCount: number; jobDescCount: number; fraction: string; isMatched: boolean }> = {}
@@ -1017,7 +1022,7 @@ export default function App() {
       hasSwapAnticipatePhrase,
       keywordFrequencies
     })
-  }, [resumeText, optimizedResumeText, jobDescriptionText, view])
+  }, [resumeText, optimizedResumeText, jobDescriptionText, view, resumeData, appliedFixes])
 
   const handleSavedResumeSelect = (resume: SavedResume) => {
     setResumeText(convertPlainResumeToClassicHTML(resume.content))
@@ -1430,6 +1435,7 @@ export default function App() {
       title: 'Assistant Concierge',
       contact: 'vxayananh@gmail.com | 206-617-3696 | Seattle, WA'
     }))
+    setAppliedFixes(prev => [...prev, 'header'])
   }
 
   // Quick-fix: Undo header clean
@@ -1439,6 +1445,7 @@ export default function App() {
       name: 'VIRADETH ARCH',
       contact: 'v.arch@domain.com | (123) 456-7890 | Seattle, WA'
     }))
+    setAppliedFixes(prev => prev.filter(f => f !== 'header'))
   }
 
   // Quick-fix: Injects Lounge Monitoring as sequential bullet item at bottom
@@ -1447,6 +1454,7 @@ export default function App() {
       ...prev,
       job1Bullets: [...prev.job1Bullets, 'Monitored club lounge for seating availability, service flow, and guest well-being according to luxury property standards.']
     }))
+    setAppliedFixes(prev => [...prev, 'loungeMonitoring'])
   }
 
   // Quick-fix: Undo Lounge Monitoring injection
@@ -1455,6 +1463,7 @@ export default function App() {
       ...prev,
       job1Bullets: prev.job1Bullets.filter(b => !b.includes('Monitored club lounge'))
     }))
+    setAppliedFixes(prev => prev.filter(f => f !== 'loungeMonitoring'))
   }
 
   // Quick-fix: Injects Lounge Checklists (Shift Logs) as sequential bullet item at bottom
@@ -1463,6 +1472,7 @@ export default function App() {
       ...prev,
       job2Bullets: [...prev.job2Bullets, 'Reviewed shift logs and daily memo books to document and communicate pertinent information across shifts.']
     }))
+    setAppliedFixes(prev => [...prev, 'loungeChecklists'])
   }
 
   // Quick-fix: Undo Lounge Checklists injection
@@ -1471,6 +1481,7 @@ export default function App() {
       ...prev,
       job2Bullets: prev.job2Bullets.filter(b => !b.includes('Reviewed shift logs'))
     }))
+    setAppliedFixes(prev => prev.filter(f => f !== 'loungeChecklists'))
   }
 
   // Quick-fix: Injects Safety Reporting & Compliance as sequential bullet item at bottom
@@ -1479,6 +1490,7 @@ export default function App() {
       ...prev,
       job1Bullets: [...prev.job1Bullets, 'Reported accidents, injuries, and unsafe work conditions in accordance with safety compliance guidelines and standard regulatory procedures.']
     }))
+    setAppliedFixes(prev => [...prev, 'safetyCompliance'])
   }
 
   // Quick-fix: Undo Safety Reporting & Compliance injection
@@ -1487,6 +1499,7 @@ export default function App() {
       ...prev,
       job1Bullets: prev.job1Bullets.filter(b => !b.includes('Reported accidents'))
     }))
+    setAppliedFixes(prev => prev.filter(f => f !== 'safetyCompliance'))
   }
 
   // Quick-fix: Swap phrase 'Protect company assets' to Marriott style
@@ -1499,6 +1512,7 @@ export default function App() {
         job1Bullets: nextBullets
       }
     })
+    setAppliedFixes(prev => [...prev, 'swapAssets'])
   }
 
   // Quick-fix: Undo Swap assets
@@ -1511,6 +1525,7 @@ export default function App() {
         job1Bullets: nextBullets
       }
     })
+    setAppliedFixes(prev => prev.filter(f => f !== 'swapAssets'))
   }
 
   // Quick-fix: Swap phrase 'Anticipate and address' to Marriott style
@@ -1523,6 +1538,7 @@ export default function App() {
         job2Bullets: nextBullets
       }
     })
+    setAppliedFixes(prev => [...prev, 'swapAnticipate'])
   }
 
   // Quick-fix: Undo Swap anticipate
@@ -1535,6 +1551,7 @@ export default function App() {
         job2Bullets: nextBullets
       }
     })
+    setAppliedFixes(prev => prev.filter(f => f !== 'swapAnticipate'))
   }
 
   const handleCopyText = () => {
