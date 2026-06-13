@@ -1560,7 +1560,43 @@ export default function App() {
       const actionBars = clone.querySelectorAll('.opacity-0, [class*="opacity-0"]')
       actionBars.forEach(bar => bar.remove())
 
-      // 2. Remove keyword spotlight backgrounds/borders and restore normal print typography
+      // 2. Wipe web-only visual left border accent bars from printing
+      const accentBars = clone.querySelectorAll('.border-accent-bar')
+      accentBars.forEach(bar => bar.remove())
+
+      // 3. Convert job header flex rows into borderless 2-column tables to lock left and right elements in place
+      const jobHeaders = clone.querySelectorAll('.job-header-row')
+      jobHeaders.forEach(header => {
+        const leftCol = header.firstElementChild
+        const rightCol = header.lastElementChild
+        if (leftCol && rightCol) {
+          const leftHTML = leftCol.innerHTML
+          const rightHTML = rightCol.innerHTML
+          
+          const table = document.createElement('table')
+          table.style.width = '100%'
+          table.style.borderCollapse = 'collapse'
+          table.style.border = 'none'
+          table.style.margin = '0 0 4px 0'
+          table.style.padding = '0'
+          
+          table.innerHTML = `
+            <tbody>
+              <tr>
+                <td style="width: 70%; text-align: left; vertical-align: baseline; border: none; padding: 0;">
+                  ${leftHTML}
+                </td>
+                <td style="width: 30%; text-align: right; vertical-align: baseline; border: none; padding: 0;">
+                  ${rightHTML}
+                </td>
+              </tr>
+            </tbody>
+          `
+          header.parentNode?.replaceChild(table, header)
+        }
+      })
+
+      // 4. Remove keyword spotlight backgrounds/borders and restore normal print typography
       const highlightedSpans = clone.querySelectorAll('span[class*="bg-emerald-50"]')
       highlightedSpans.forEach(span => {
         const text = span.textContent || ''
@@ -1568,7 +1604,7 @@ export default function App() {
         span.parentNode?.replaceChild(textNode, span)
       })
 
-      // 3. Normalize the cloned page container styles for full-bleed printing
+      // 5. Normalize the cloned page container styles for full-bleed printing
       clone.className = `w-full bg-white ${canvasPadding} ${canvasFont} text-slate-800 text-left block`
       clone.style.boxShadow = 'none'
       clone.style.minHeight = 'auto'
@@ -2341,7 +2377,7 @@ export default function App() {
 
                         {/* JOB ENTRY 1 */}
                         <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
-                          <div className="flex justify-between items-baseline w-full">
+                          <div className="job-header-row flex justify-between items-baseline w-full">
                             <div>
                               <span 
                                 className={`font-bold ${ACCENT_STYLES[canvasAccent].title} text-base cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors`} 
@@ -2515,7 +2551,7 @@ export default function App() {
                           <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 animate-fadeIn">
                             {/* Dynamic Inserted Left Accent Indicator Bar */}
                             <div className="absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded select-none pointer-events-none"></div>
-                            <div className="flex justify-between items-baseline w-full">
+                            <div className="job-header-row flex justify-between items-baseline w-full">
                               <div>
                                 <span 
                                   id="job3Title"
@@ -2674,7 +2710,7 @@ export default function App() {
 
                         {/* JOB ENTRY 2 */}
                         <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
-                          <div className="flex justify-between items-baseline w-full">
+                          <div className="job-header-row flex justify-between items-baseline w-full">
                             <div>
                               <span 
                                 className={`font-bold ${ACCENT_STYLES[canvasAccent].title} text-base cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors`} 
