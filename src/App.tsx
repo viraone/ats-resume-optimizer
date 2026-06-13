@@ -2370,7 +2370,7 @@ export default function App() {
                         <hr className={`border-t ${ACCENT_STYLES[canvasAccent].hr} my-1`} />
 
                         {/* JOB ENTRY 1 */}
-                        <div className="mt-4 mb-5 block w-full">
+                        <div className="mt-4 mb-5 block w-full group relative">
                           <div className="flex justify-between items-baseline w-full">
                             <div>
                               <span 
@@ -2542,7 +2542,7 @@ export default function App() {
 
                         {/* DYNAMIC JOB ENTRY 3 (INSERTED SECTION NODE) */}
                         {resumeData.showJob3 && (
-                          <div className="mt-4 mb-5 block w-full border-l-2 border-emerald-300 pl-4 py-1 bg-emerald-50/10 rounded-r relative group/job3 animate-fadeIn">
+                          <div className="mt-4 mb-5 block w-full border-l-2 border-emerald-300 pl-4 py-1 bg-emerald-50/10 rounded-r relative group animate-fadeIn">
                             <div className="flex justify-between items-baseline w-full">
                               <div>
                                 <span 
@@ -2596,7 +2596,7 @@ export default function App() {
                                       job3Bullets: []
                                     }))
                                   }}
-                                  className="opacity-0 group-hover/job3:opacity-100 text-slate-400 hover:text-red-500 text-xs font-bold px-2 py-0.5 rounded hover:bg-slate-100 transition-colors cursor-pointer select-none outline-none"
+                                  className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 text-xs font-bold px-2 py-0.5 rounded hover:bg-slate-100 transition-colors cursor-pointer select-none outline-none"
                                   title="Remove Role"
                                 >
                                   ✕
@@ -2701,7 +2701,7 @@ export default function App() {
                         )}
 
                         {/* JOB ENTRY 2 */}
-                        <div className="mt-4 mb-5 block w-full">
+                        <div className="mt-4 mb-5 block w-full group relative">
                           <div className="flex justify-between items-baseline w-full">
                             <div>
                               <span 
