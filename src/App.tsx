@@ -1430,46 +1430,63 @@ export default function App() {
       title: 'Assistant Concierge',
       contact: 'vxayananh@gmail.com | 206-617-3696 | Seattle, WA'
     }))
-    alert("Duplicate contact headers cleaned! Your profile header is now standardized under Viradeth Xay-ananh.")
   }
 
-  // Quick-fix: Injects Lounge Monitoring
+  // Quick-fix: Undo header clean
+  const handleUndoHeader = () => {
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      name: 'VIRADETH ARCH',
+      contact: 'v.arch@domain.com | (123) 456-7890 | Seattle, WA'
+    }))
+  }
+
+  // Quick-fix: Injects Lounge Monitoring as sequential bullet item at bottom
   const handleInjectLoungeMonitoring = () => {
-    applyDataChangeWithHistory(prev => {
-      const nextBullets = [...prev.job1Bullets]
-      nextBullets[1] = (nextBullets[1] || '') + ' Monitored club lounge for seating availability, service flow, and guest well-being according to luxury property standards.'
-      return {
-        ...prev,
-        job1Bullets: nextBullets
-      }
-    })
-    alert("Injected 'Club Lounge Monitoring' metrics to Climate Pledge Arena role!")
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      job1Bullets: [...prev.job1Bullets, 'Monitored club lounge for seating availability, service flow, and guest well-being according to luxury property standards.']
+    }))
   }
 
-  // Quick-fix: Injects Lounge Checklists (Shift Logs)
+  // Quick-fix: Undo Lounge Monitoring injection
+  const handleUndoLoungeMonitoring = () => {
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      job1Bullets: prev.job1Bullets.filter(b => !b.includes('Monitored club lounge'))
+    }))
+  }
+
+  // Quick-fix: Injects Lounge Checklists (Shift Logs) as sequential bullet item at bottom
   const handleInjectLoungeChecklists = () => {
-    applyDataChangeWithHistory(prev => {
-      const nextBullets = [...prev.job2Bullets]
-      nextBullets[1] = (nextBullets[1] || '') + ' Reviewed shift logs and daily memo books to document and communicate pertinent information across shifts.'
-      return {
-        ...prev,
-        job2Bullets: nextBullets
-      }
-    })
-    alert("Injected 'Operational Checklists' logging keywords to Emerald City Comedy Club role!")
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      job2Bullets: [...prev.job2Bullets, 'Reviewed shift logs and daily memo books to document and communicate pertinent information across shifts.']
+    }))
   }
 
-  // Quick-fix: Injects Safety Reporting & Compliance
+  // Quick-fix: Undo Lounge Checklists injection
+  const handleUndoLoungeChecklists = () => {
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      job2Bullets: prev.job2Bullets.filter(b => !b.includes('Reviewed shift logs'))
+    }))
+  }
+
+  // Quick-fix: Injects Safety Reporting & Compliance as sequential bullet item at bottom
   const handleInjectSafetyCompliance = () => {
-    applyDataChangeWithHistory(prev => {
-      const nextBullets = [...prev.job1Bullets]
-      nextBullets[1] = (nextBullets[1] || '') + ' Reported accidents, injuries, and unsafe work conditions in accordance with safety compliance guidelines and standard regulatory procedures.'
-      return {
-        ...prev,
-        job1Bullets: nextBullets
-      }
-    })
-    alert("Injected 'Safety Reporting & Compliance' keywords to Climate Pledge Arena role!")
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      job1Bullets: [...prev.job1Bullets, 'Reported accidents, injuries, and unsafe work conditions in accordance with safety compliance guidelines and standard regulatory procedures.']
+    }))
+  }
+
+  // Quick-fix: Undo Safety Reporting & Compliance injection
+  const handleUndoSafetyCompliance = () => {
+    applyDataChangeWithHistory(prev => ({
+      ...prev,
+      job1Bullets: prev.job1Bullets.filter(b => !b.includes('Reported accidents'))
+    }))
   }
 
   // Quick-fix: Swap phrase 'Protect company assets' to Marriott style
@@ -1482,7 +1499,18 @@ export default function App() {
         job1Bullets: nextBullets
       }
     })
-    alert("Swapped 'Protect company assets' to 'Maintain confidentiality of proprietary information and protect company assets'!")
+  }
+
+  // Quick-fix: Undo Swap assets
+  const handleUndoSwapAssets = () => {
+    applyDataChangeWithHistory(prev => {
+      const nextBullets = [...prev.job1Bullets]
+      nextBullets[0] = (nextBullets[0] || '').replace(/Maintain confidentiality of proprietary information and protect company assets/gi, 'protect company assets')
+      return {
+        ...prev,
+        job1Bullets: nextBullets
+      }
+    })
   }
 
   // Quick-fix: Swap phrase 'Anticipate and address' to Marriott style
@@ -1495,7 +1523,18 @@ export default function App() {
         job2Bullets: nextBullets
       }
     })
-    alert("Swapped 'Anticipate and address' to 'Anticipate guests' service needs with genuine appreciation'!")
+  }
+
+  // Quick-fix: Undo Swap anticipate
+  const handleUndoSwapAnticipate = () => {
+    applyDataChangeWithHistory(prev => {
+      const nextBullets = [...prev.job2Bullets]
+      nextBullets[1] = (nextBullets[1] || '').replace(/Anticipate guests' service needs with genuine appreciation/gi, "anticipate guest concerns")
+      return {
+        ...prev,
+        job2Bullets: nextBullets
+      }
+    })
   }
 
   const handleCopyText = () => {
@@ -2887,11 +2926,17 @@ export default function App() {
                                 Apply Fix
                               </button>
                             ) : (
-                              <div className="flex items-center justify-center gap-1.5">
-                                <span className="text-emerald-600 font-bold text-xs">✓</span>
+                              <div className="flex items-center justify-center">
                                 <button
-                                  onClick={handleUndo}
-                                  className="text-[8px] text-slate-500 hover:text-slate-800 font-bold bg-slate-100 hover:bg-slate-200 border border-slate-200 px-1.5 py-0.5 rounded transition-all"
+                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  disabled
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Applied</span>
+                                </button>
+                                <button
+                                  onClick={handleUndoHeader}
+                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -2957,15 +3002,22 @@ export default function App() {
                               <button
                                 onClick={handleInjectLoungeMonitoring}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
+                                title="Apply Fix"
                               >
                                 Apply Fix
                               </button>
                             ) : (
-                              <div className="flex items-center justify-center gap-1.5">
-                                <span className="text-emerald-600 font-bold text-xs">✓</span>
+                              <div className="flex items-center justify-center">
                                 <button
-                                  onClick={handleUndo}
-                                  className="text-[8px] text-slate-500 hover:text-slate-800 font-bold bg-slate-100 hover:bg-slate-200 border border-slate-200 px-1.5 py-0.5 rounded transition-all"
+                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  disabled
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Applied</span>
+                                </button>
+                                <button
+                                  onClick={handleUndoLoungeMonitoring}
+                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3010,15 +3062,22 @@ export default function App() {
                               <button
                                 onClick={handleInjectLoungeChecklists}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
+                                title="Apply Fix"
                               >
                                 Apply Fix
                               </button>
                             ) : (
-                              <div className="flex items-center justify-center gap-1.5">
-                                <span className="text-emerald-600 font-bold text-xs">✓</span>
+                              <div className="flex items-center justify-center">
                                 <button
-                                  onClick={handleUndo}
-                                  className="text-[8px] text-slate-500 hover:text-slate-800 font-bold bg-slate-100 hover:bg-slate-200 border border-slate-200 px-1.5 py-0.5 rounded transition-all"
+                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  disabled
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Applied</span>
+                                </button>
+                                <button
+                                  onClick={handleUndoLoungeChecklists}
+                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3063,15 +3122,22 @@ export default function App() {
                               <button
                                 onClick={handleInjectSafetyCompliance}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
+                                title="Apply Fix"
                               >
                                 Apply Fix
                               </button>
                             ) : (
-                              <div className="flex items-center justify-center gap-1.5">
-                                <span className="text-emerald-600 font-bold text-xs">✓</span>
+                              <div className="flex items-center justify-center">
                                 <button
-                                  onClick={handleUndo}
-                                  className="text-[8px] text-slate-500 hover:text-slate-800 font-bold bg-slate-100 hover:bg-slate-200 border border-slate-200 px-1.5 py-0.5 rounded transition-all"
+                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  disabled
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Applied</span>
+                                </button>
+                                <button
+                                  onClick={handleUndoSafetyCompliance}
+                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3137,15 +3203,22 @@ export default function App() {
                               <button
                                 onClick={handleSwapAnticipate}
                                 className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-[9px] font-bold px-2 py-1 rounded-md border border-amber-200 transition-colors shrink-0"
+                                title="Apply Fix"
                               >
                                 Apply Fix
                               </button>
                             ) : (
-                              <div className="flex items-center justify-center gap-1.5">
-                                <span className="text-emerald-600 font-bold text-xs">✓</span>
+                              <div className="flex items-center justify-center">
                                 <button
-                                  onClick={handleUndo}
-                                  className="text-[8px] text-slate-500 hover:text-slate-800 font-bold bg-slate-100 hover:bg-slate-200 border border-slate-200 px-1.5 py-0.5 rounded transition-all"
+                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  disabled
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Applied</span>
+                                </button>
+                                <button
+                                  onClick={handleUndoSwapAnticipate}
+                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3190,15 +3263,22 @@ export default function App() {
                               <button
                                 onClick={handleSwapAssets}
                                 className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-[9px] font-bold px-2 py-1 rounded-md border border-amber-200 transition-colors shrink-0"
+                                title="Apply Fix"
                               >
                                 Apply Fix
                               </button>
                             ) : (
-                              <div className="flex items-center justify-center gap-1.5">
-                                <span className="text-emerald-600 font-bold text-xs">✓</span>
+                              <div className="flex items-center justify-center">
                                 <button
-                                  onClick={handleUndo}
-                                  className="text-[8px] text-slate-500 hover:text-slate-800 font-bold bg-slate-100 hover:bg-slate-200 border border-slate-200 px-1.5 py-0.5 rounded transition-all"
+                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  disabled
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                  <span>Applied</span>
+                                </button>
+                                <button
+                                  onClick={handleUndoSwapAssets}
+                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
                                   title="Undo Fix"
                                 >
                                   Undo
