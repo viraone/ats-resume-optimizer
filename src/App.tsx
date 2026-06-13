@@ -2870,26 +2870,26 @@ export default function App() {
                               >
                                 {resumeData.job3Dates}
                               </div>
-
-                              {/* Absolute Positioned Remove Role Gutter Button */}
-                              <button
-                                onClick={() => {
-                                  applyDataChangeWithHistory(prev => ({
-                                    ...prev,
-                                    showJob3: false,
-                                    job3Title: '',
-                                    job3Company: '',
-                                    job3Dates: '',
-                                    job3Location: '',
-                                    job3Bullets: []
-                                  }))
-                                }}
-                                className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 text-xs font-bold w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 transition-all cursor-pointer select-none outline-none absolute -right-6 top-1"
-                                title="Remove Role"
-                              >
-                                ✕
-                              </button>
                             </div>
+
+                            {/* Absolute Positioned Remove Role Gutter Button - Sibling of Header Row */}
+                            <button
+                              onClick={() => {
+                                applyDataChangeWithHistory(prev => ({
+                                  ...prev,
+                                  showJob3: false,
+                                  job3Title: '',
+                                  job3Company: '',
+                                  job3Dates: '',
+                                  job3Location: '',
+                                  job3Bullets: []
+                                }))
+                              }}
+                              className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 text-xs font-bold w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 transition-all cursor-pointer select-none outline-none absolute -right-6 top-1.5"
+                              title="Remove Role"
+                            >
+                              ✕
+                            </button>
                             <div 
                               className="text-xs text-slate-400 italic mb-1 cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors focus:outline-none" 
                               contentEditable 
