@@ -28,7 +28,8 @@ import {
   FileSpreadsheet,
   Undo,
   Redo,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-react'
 
 export interface ResumeData {
@@ -801,6 +802,7 @@ export default function App() {
   const [isAutoOptimizing, setIsAutoOptimizing] = useState(false)
   const [optimizingStep, setOptimizingStep] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
+  const [isParserSimulatorEnabled, setIsParserSimulatorEnabled] = useState(false)
   
   const rulerRef = useRef<HTMLDivElement>(null)
 
@@ -1909,6 +1911,12 @@ export default function App() {
     setShowDownloadDropdown(false)
   }
 
+  const job1FixedCount = (appliedFixes.includes('loungeMonitoring') ? 1 : 0) + (appliedFixes.includes('safetyCompliance') ? 1 : 0)
+  const job1Status = job1FixedCount === 2 ? 'OPTIMIZED' : job1FixedCount === 1 ? 'SEMANTIC_GAPS' : 'FRAGMENTED'
+
+  const job2FixedCount = (appliedFixes.includes('loungeChecklists') ? 1 : 0) + ((appliedFixes.includes('swapAnticipate') && appliedFixes.includes('swapAssets')) ? 1 : 0)
+  const job2Status = job2FixedCount === 2 ? 'OPTIMIZED' : job2FixedCount === 1 ? 'SEMANTIC_GAPS' : 'FRAGMENTED'
+
   return (
     <div className="flex h-screen bg-[#f8fafc] overflow-hidden font-sans antialiased text-[#1e293b]">
       {/* Premium Falling Confetti Celebration (Custom CSS Driven) */}
@@ -2431,7 +2439,7 @@ export default function App() {
                   <div className="h-4 w-px bg-slate-200"></div>
 
                   {/* Spotlight Mode Toggle */}
-                  <div className="flex items-center gap-1.5 mr-1">
+                  <div className="flex items-center gap-1.5">
                     <span className="text-slate-500 font-semibold select-none">Spotlight:</span>
                     <button
                       onClick={() => setIsSpotlightEnabled(!isSpotlightEnabled)}
@@ -2440,6 +2448,22 @@ export default function App() {
                     >
                       <Sparkles className="w-3 h-3 text-emerald-500" />
                       <span>{isSpotlightEnabled ? 'ON' : 'OFF'}</span>
+                    </button>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-4 w-px bg-slate-200"></div>
+
+                  {/* ATS Parser Simulator Mode Toggle */}
+                  <div className="flex items-center gap-1.5 mr-1">
+                    <span className="text-slate-500 font-semibold select-none whitespace-nowrap">Recruiter Eye:</span>
+                    <button
+                      onClick={() => setIsParserSimulatorEnabled(!isParserSimulatorEnabled)}
+                      className={`px-2.5 py-0.5 rounded font-extrabold text-[10px] transition-all flex items-center gap-1 border ${isParserSimulatorEnabled ? 'bg-indigo-50 text-indigo-700 border-indigo-200 animate-pulse shadow-[0_0_10px_rgba(99,102,241,0.2)]' : 'bg-white text-slate-400 border-slate-200 hover:text-indigo-600'}`}
+                      title="Simulate ATS Machine Vision Parser Overlays"
+                    >
+                      <Eye className={`w-3 h-3 ${isParserSimulatorEnabled ? 'text-indigo-500' : 'text-slate-400'}`} />
+                      <span>{isParserSimulatorEnabled ? 'SCANNING' : 'OFF'}</span>
                     </button>
                   </div>
                 </div>
@@ -2699,7 +2723,22 @@ export default function App() {
                       ) : (
                         <>
                           {/* DOCUMENT HEADER */}
-                          <div className={`text-right border-b ${ACCENT_STYLES[canvasAccent].border} pb-4 mb-6 w-full block`}>
+                          <div className={`text-right border-b ${ACCENT_STYLES[canvasAccent].border} pb-4 mb-6 w-full block relative ${
+                            isParserSimulatorEnabled 
+                              ? !appliedFixes.includes('header')
+                                ? 'border-2 border-dashed border-red-500/80 bg-red-50/5 rounded-lg p-2 shadow-[0_0_15px_rgba(239,68,68,0.15)] transition-all duration-300'
+                                : 'border-2 border-dashed border-emerald-500/80 bg-emerald-50/5 rounded-lg p-2 shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-300'
+                              : ''
+                          }`}>
+                            {isParserSimulatorEnabled && (
+                              <div className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-10 ${
+                                !appliedFixes.includes('header')
+                                  ? 'bg-red-500 text-white animate-pulse'
+                                  : 'bg-emerald-500 text-white'
+                              }`}>
+                                {`[ATS Node: Contact Header | Status: ${!appliedFixes.includes('header') ? 'FRAGMENTED IDENTITY' : 'VERIFIED OPTIMIZED'} | Conf: ${!appliedFixes.includes('header') ? '45%' : '99.8%'}]`}
+                              </div>
+                            )}
                         <h1 
                           className={`text-3xl font-bold ${ACCENT_STYLES[canvasAccent].title} tracking-tight cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors`} 
                           contentEditable 
@@ -2749,7 +2788,16 @@ export default function App() {
                       </div>
 
                       {/* PROFESSIONAL SUMMARY */}
-                      <div className="mb-6 w-full block">
+                      <div className={`mb-6 w-full block relative ${
+                        isParserSimulatorEnabled 
+                          ? 'border-2 border-dashed border-emerald-500/80 bg-emerald-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-300' 
+                          : ''
+                      }`}>
+                        {isParserSimulatorEnabled && (
+                          <div className="absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider bg-emerald-500 text-white z-10">
+                            [ATS Node: Professional Summary | Status: OPTIMIZED | Score: 95%]
+                          </div>
+                        )}
                         <h2 className={`text-sm font-bold ${ACCENT_STYLES[canvasAccent].heading} tracking-wider uppercase mb-1`}>Professional Summary</h2>
                         <hr className={`border-t ${ACCENT_STYLES[canvasAccent].hr} my-1`} />
                         <p 
@@ -2777,7 +2825,26 @@ export default function App() {
                         <hr className={`border-t ${ACCENT_STYLES[canvasAccent].hr} my-1`} />
 
                         {/* JOB ENTRY 1 */}
-                        <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
+                        <div className={`mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 ${
+                          isParserSimulatorEnabled 
+                            ? job1Status === 'OPTIMIZED'
+                              ? 'border-2 border-dashed border-emerald-500/80 bg-emerald-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                              : job1Status === 'SEMANTIC_GAPS'
+                                ? 'border-2 border-dashed border-amber-500/80 bg-amber-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                                : 'border-2 border-dashed border-red-500/80 bg-red-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(239,68,68,0.15)]'
+                            : ''
+                        }`}>
+                          {isParserSimulatorEnabled && (
+                            <div className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-10 ${
+                              job1Status === 'OPTIMIZED'
+                                ? 'bg-emerald-500 text-white'
+                                : job1Status === 'SEMANTIC_GAPS'
+                                  ? 'bg-amber-500 text-white animate-pulse'
+                                  : 'bg-red-500 text-white animate-pulse'
+                            }`}>
+                              {`[ATS Node: Experience Row 1 | Status: ${job1Status} | Gaps: ${2 - job1FixedCount}/2 | Conf: ${job1Status === 'OPTIMIZED' ? '98%' : job1Status === 'SEMANTIC_GAPS' ? '70%' : '35%'}]`}
+                            </div>
+                          )}
                           {/* Dynamic left accent indicator bar for interactive editing focus */}
                           <div className="border-accent-bar absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 print:hidden select-none pointer-events-none"></div>
                           <div className="job-header-row flex justify-between items-baseline w-full">
@@ -2951,7 +3018,16 @@ export default function App() {
 
                         {/* DYNAMIC JOB ENTRY 3 (INSERTED SECTION NODE) */}
                         {resumeData.showJob3 && (
-                          <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 animate-fadeIn">
+                          <div className={`mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 animate-fadeIn ${
+                            isParserSimulatorEnabled 
+                              ? 'border-2 border-dashed border-emerald-500/80 bg-emerald-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                              : ''
+                          }`}>
+                            {isParserSimulatorEnabled && (
+                              <div className="absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider bg-emerald-500 text-white z-10">
+                                [ATS Node: Experience Row 2 | Status: OPTIMIZED - DYNAMIC | Conf: 97%]
+                              </div>
+                            )}
                             {/* Dynamic left accent indicator bar for interactive editing focus */}
                             <div className="border-accent-bar absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 print:hidden select-none pointer-events-none"></div>
                             <div className="job-header-row flex justify-between items-baseline w-full">
@@ -3112,7 +3188,26 @@ export default function App() {
                         )}
 
                         {/* JOB ENTRY 2 */}
-                        <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
+                        <div className={`mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 ${
+                          isParserSimulatorEnabled 
+                            ? job2Status === 'OPTIMIZED'
+                              ? 'border-2 border-dashed border-emerald-500/80 bg-emerald-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                              : job2Status === 'SEMANTIC_GAPS'
+                                ? 'border-2 border-dashed border-amber-500/80 bg-amber-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                                : 'border-2 border-dashed border-red-500/80 bg-red-50/5 rounded-lg p-3 shadow-[0_0_15px_rgba(239,68,68,0.15)]'
+                            : ''
+                        }`}>
+                          {isParserSimulatorEnabled && (
+                            <div className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-10 ${
+                              job2Status === 'OPTIMIZED'
+                                ? 'bg-emerald-500 text-white'
+                                : job2Status === 'SEMANTIC_GAPS'
+                                  ? 'bg-amber-500 text-white animate-pulse'
+                                  : 'bg-red-500 text-white animate-pulse'
+                            }`}>
+                              {`[ATS Node: Experience Row 3 | Status: ${job2Status} | Gaps: ${2 - job2FixedCount}/2 | Conf: ${job2Status === 'OPTIMIZED' ? '98%' : job2Status === 'SEMANTIC_GAPS' ? '70%' : '35%'}]`}
+                            </div>
+                          )}
                           {/* Dynamic left accent indicator bar for interactive editing focus */}
                           <div className="border-accent-bar absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 print:hidden select-none pointer-events-none"></div>
                           <div className="job-header-row flex justify-between items-baseline w-full">
