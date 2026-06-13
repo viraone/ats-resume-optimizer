@@ -2370,7 +2370,7 @@ export default function App() {
                         <hr className={`border-t ${ACCENT_STYLES[canvasAccent].hr} my-1`} />
 
                         {/* JOB ENTRY 1 */}
-                        <div className="mt-4 mb-5 block w-full group relative">
+                        <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
                           <div className="flex justify-between items-baseline w-full">
                             <div>
                               <span 
@@ -2542,7 +2542,9 @@ export default function App() {
 
                         {/* DYNAMIC JOB ENTRY 3 (INSERTED SECTION NODE) */}
                         {resumeData.showJob3 && (
-                          <div className="mt-4 mb-5 block w-full border-l-2 border-emerald-300 pl-4 py-1 bg-emerald-50/10 rounded-r relative group animate-fadeIn">
+                          <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 animate-fadeIn">
+                            {/* Dynamic Inserted Left Accent Indicator Bar */}
+                            <div className="absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded select-none pointer-events-none"></div>
                             <div className="flex justify-between items-baseline w-full">
                               <div>
                                 <span 
@@ -2701,7 +2703,7 @@ export default function App() {
                         )}
 
                         {/* JOB ENTRY 2 */}
-                        <div className="mt-4 mb-5 block w-full group relative">
+                        <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
                           <div className="flex justify-between items-baseline w-full">
                             <div>
                               <span 
