@@ -807,6 +807,7 @@ export default function App() {
   const [activeAtsPopover, setActiveAtsPopover] = useState<'header' | 'job1' | 'job2' | null>(null)
   const [layoutCompression, setLayoutCompression] = useState(0) // 0 to 100% compression
   const [overflowLines, setOverflowLines] = useState(0) // dynamic calculated overflow lines
+  const [activePersona, setActivePersona] = useState<'classic' | 'luxury' | 'safety'>('classic')
   
   const rulerRef = useRef<HTMLDivElement>(null)
 
@@ -1479,6 +1480,63 @@ export default function App() {
     return () => clearTimeout(timer)
   }, [resumeData, layoutCompression, lineSpacing, canvasPadding, canvasFont, view])
 
+  // Dynamic Role Persona Semantic Tone Mutator
+  useEffect(() => {
+    if (activePersona === 'luxury') {
+      applyDataChangeWithHistory(prev => ({
+        ...prev,
+        title: 'VIP Guest Concierge & Host',
+        summary: 'Distinguished hospitality artisan and customer relations specialist with a record of orchestrating VIP experiences at elite establishments. Expert in curating high-end lounge ambiances, preempting VIP guest requirements, and delivering five-star concierge hospitality across premium Seattle venues.',
+        job1Title: 'VIP Guest Concierge & Host',
+        job1Bullets: [
+          'Optimized executive guest arrival and ticketing verification layouts, reducing check-in times by 15% and securing safety compliance standards.',
+          'Orchestrated guest arrival safety flows and guided VIP patrons during events, maintaining elite five-star crowd management safety procedures.',
+          'Curated exclusive lounge seating experiences and curated high-touch guest relations, actively managing seating availability and luxury guest lounge monitoring.'
+        ],
+        job2Bullets: [
+          'Curated high-luxury club lounges, maintaining meticulous organization of operational shift logs, and cleaning standards for elite executive circles.',
+          'Assisted VIP patrons with food/beverage pairings and custom concierge seating layouts, anticipating VIP client safety and operational expectations.',
+          'Conducted routine high-touch quality assurance checks and guest relations sweeps, ensuring pristine luxury ambiances and perfect safety compliance.'
+        ]
+      }))
+    } else if (activePersona === 'safety') {
+      applyDataChangeWithHistory(prev => ({
+        ...prev,
+        title: 'Lead Safety & Compliance Officer',
+        summary: 'Rigorous security professional and emergency coordinator specializing in high-occupancy risk mitigation. Expert in managing crowd dynamics, enforcing strict regulatory and safety standards, and coordinating venue security operations across major Seattle event spaces.',
+        job1Title: 'Lead Safety & Compliance Officer',
+        job1Bullets: [
+          'Optimized stadium guest entry flow and ticket verification checkpoints, resolving identity discrepancies and securing safety compliance standards.',
+          'Enforced perimeter safety compliance standards and engineered risk response strategies, maintaining strict venue security procedures.',
+          'Conducted strict capacity threshold checks and maintained exit safety clearance paths, ensuring compliant lounge monitoring and safe seating structures.'
+        ],
+        job2Bullets: [
+          'Coordinated high-occupancy venue emergency response plans and cleaning compliance procedures, keeping thorough operational shift logs.',
+          'Checked credentials of all restricted venue entrances, anticipating threat vectors and maintaining robust safety controls across security sectors.',
+          'Conducted daily risk sweeps and compliance audits, ensuring strict regulatory adherence, safety guidelines, and exit safety clearance.'
+        ]
+      }))
+    } else {
+      // Restore Standard Classic Defaults
+      applyDataChangeWithHistory(prev => ({
+        ...prev,
+        title: 'Assistant Concierge',
+        summary: 'Enthusiastic and highly responsible Assistant Concierge and security specialist with a strong background in hospitality services and safety operations. Proven track record of monitoring club lounges, assisting guests with premium seating availability, and maintaining secure, clean environments at major Seattle venues.',
+        job1Title: 'Security Officer',
+        job1Bullets: [
+          'Optimized stadium guest entry flow and ticket verification checkpoints, resolving identity discrepancies and securing safety compliance standards.',
+          'Maintained crowd safety regulations and reported incident events, ensuring high crowd safety and security compliance.',
+          'Managed seating capacity checks and assisted patrons in the lounge, ensuring comfortable lounge monitoring and seating availability.'
+        ],
+        job2Bullets: [
+          'Prepared dynamic executive spaces and organized cleaning schedules, keeping accurate operational shift logs and checklists.',
+          'Assisted VIP patrons with venue inquiries and seats arrangements, anticipating their safety and comfortable attendance expectations.',
+          'Conducted periodic floor inspections and checklists, maintaining tidy spaces, safety guidelines, and exit safety clearance.'
+        ]
+      }))
+    }
+  }, [activePersona])
+
   // Synchronize history ref on results view load
   useEffect(() => {
     if (view === 'results' && JSON.stringify(lastSavedDataRef.current) === JSON.stringify(initialResumeData)) {
@@ -1996,6 +2054,15 @@ export default function App() {
           animation-iteration-count: infinite;
           will-change: transform, opacity;
         }
+        @keyframes text-mutate {
+          0% { filter: blur(4px); opacity: 0.4; transform: scale(0.995); }
+          100% { filter: blur(0); opacity: 1; transform: scale(1); }
+        }
+        .animate-mutate-text {
+          animation: text-mutate 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          display: inline-block;
+          width: 100%;
+        }
       `}</style>
 
       {/* Sidebar Layout */}
@@ -2499,7 +2566,7 @@ export default function App() {
                   <div className="h-4 w-px bg-slate-200"></div>
 
                   {/* Page-Boundary Compressor Slider */}
-                  <div className="flex items-center gap-1.5 mr-1">
+                  <div className="flex items-center gap-1.5">
                     <span className="text-slate-500 font-semibold select-none whitespace-nowrap">📐 Fit-to-Page:</span>
                     <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded px-2 py-0.5 shadow-2xs">
                       <input
@@ -2514,6 +2581,29 @@ export default function App() {
                       <span className="font-mono text-[9px] font-extrabold text-slate-700 w-6 text-right">
                         {layoutCompression}%
                       </span>
+                    </div>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-4 w-px bg-slate-200"></div>
+
+                  {/* Role Persona Shifter Segmented Control */}
+                  <div className="flex items-center gap-1.5 mr-1">
+                    <span className="text-slate-500 font-semibold select-none whitespace-nowrap">🎭 Persona:</span>
+                    <div className="flex bg-slate-200/60 p-0.5 rounded-md">
+                      {(['classic', 'luxury', 'safety'] as const).map((p) => (
+                        <button
+                          key={p}
+                          onClick={() => setActivePersona(p)}
+                          className={`px-2 py-0.5 rounded text-[10px] font-extrabold capitalize transition-all select-none cursor-pointer ${
+                            activePersona === p 
+                              ? 'bg-white text-slate-800 shadow-xs scale-102' 
+                              : 'text-slate-500 hover:text-slate-800'
+                          }`}
+                        >
+                          {p === 'classic' ? 'Classic' : p === 'luxury' ? 'Luxury VIP' : 'Safety Lead'}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -2878,7 +2968,8 @@ export default function App() {
                           {focusedField === 'name' || !isSpotlightEnabled ? resumeData.name : undefined}
                         </h1>
                         <p 
-                          className={`text-lg ${ACCENT_STYLES[canvasAccent].sub} font-medium mt-0.5 cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors`} 
+                          key={activePersona}
+                          className={`text-lg ${ACCENT_STYLES[canvasAccent].sub} font-medium mt-0.5 cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors animate-mutate-text`} 
                           contentEditable 
                           suppressContentEditableWarning
                           onFocus={() => setFocusedField('title')}
@@ -2922,7 +3013,8 @@ export default function App() {
                         <h2 className={`text-sm font-bold ${ACCENT_STYLES[canvasAccent].heading} tracking-wider uppercase mb-1`}>Professional Summary</h2>
                         <hr className={`border-t ${ACCENT_STYLES[canvasAccent].hr} my-1`} />
                         <p 
-                          className={`text-sm ${ACCENT_STYLES[canvasAccent].bullet} leading-relaxed mt-2 cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors`} 
+                          key={activePersona}
+                          className={`text-sm ${ACCENT_STYLES[canvasAccent].bullet} leading-relaxed mt-2 cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors animate-mutate-text`} 
                           contentEditable 
                           suppressContentEditableWarning
                           onFocus={() => setFocusedField('summary')}
@@ -3068,7 +3160,10 @@ export default function App() {
                           >
                             {resumeData.job1Location}
                           </div>
-                          <ul className={`space-y-1.5 text-sm mt-2 ${ACCENT_STYLES[canvasAccent].bullet}`}>
+                          <ul 
+                            key={activePersona}
+                            className={`space-y-1.5 text-sm mt-2 ${ACCENT_STYLES[canvasAccent].bullet} animate-mutate-text`}
+                          >
                             {resumeData.job1Bullets.map((bulletText, idx) => {
                               const fieldKey = `job1Bullet_${idx}`
                               return (
@@ -3480,7 +3575,10 @@ export default function App() {
                           >
                             {resumeData.job2Location}
                           </div>
-                          <ul className={`space-y-1.5 text-sm mt-2 ${ACCENT_STYLES[canvasAccent].bullet}`}>
+                          <ul 
+                            key={activePersona}
+                            className={`space-y-1.5 text-sm mt-2 ${ACCENT_STYLES[canvasAccent].bullet} animate-mutate-text`}
+                          >
                             {resumeData.job2Bullets.map((bulletText, idx) => {
                               const fieldKey = `job2Bullet_${idx}`
                               return (
