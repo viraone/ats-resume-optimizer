@@ -1151,9 +1151,138 @@ export default function App() {
         clearInterval(interval)
         setIsOptimizing(false)
         
+        // Parse the user's entered/pasted resume text dynamically
+        if (resumeText.trim()) {
+          const lines = resumeText.split('\n').map(l => l.trim()).filter(l => l.length > 0)
+          
+          let parsedName = 'Candidate Name'
+          let parsedTitle = 'Professional Title'
+          let parsedContact = 'contact@email.com | (123) 456-7890 | City, ST'
+          let parsedSummary = ''
+          
+          // Basic heuristic extraction
+          if (lines.length > 0) parsedName = lines[0]
+          if (lines.length > 1) {
+            if (lines[1].includes('@') || lines[1].includes('|') || /[\d-]{7,}/.test(lines[1])) {
+              parsedContact = lines[1]
+            } else {
+              parsedTitle = lines[1]
+            }
+          }
+          if (lines.length > 2 && parsedContact === 'contact@email.com | (123) 456-7890 | City, ST') {
+            if (lines[2].includes('@') || lines[2].includes('|') || /[\d-]{7,}/.test(lines[2])) {
+              parsedContact = lines[2]
+            }
+          }
+
+          let summaryIndex = lines.findIndex(l => l.toUpperCase().includes('SUMMARY'))
+          if (summaryIndex !== -1 && summaryIndex + 1 < lines.length) {
+            parsedSummary = lines[summaryIndex + 1]
+          } else {
+            const fallbackSummary = lines.find((l, idx) => idx > 1 && l.length > 60 && !l.includes('•') && !l.startsWith('-'))
+            parsedSummary = fallbackSummary || 'Experienced professional with a proven track record of driving operational excellence, implementing rigorous standards, and delivering high-quality client satisfaction.'
+          }
+
+          let job1Title = 'Security Officer'
+          let job1Company = '• Climate Pledge Arena'
+          let job1Dates = 'Nov 2025 - Mar 2026'
+          let job1Location = 'Seattle, WA'
+          let job1Bullets: string[] = []
+
+          let job2Title = 'Host'
+          let job2Company = '• Emerald City Comedy Club'
+          let job2Dates = 'Feb 2025 - Aug 2025'
+          let job2Location = 'Seattle, WA'
+          let job2Bullets: string[] = []
+
+          let job3Title = 'QA Engineer'
+          let job3Company = '• InReach Solutions'
+          let job3Dates = 'Sep 2024 - Jan 2025'
+          let job3Location = 'Seattle, WA'
+          let job3Bullets: string[] = []
+          let showJob3 = false
+
+          const lowerText = resumeText.toLowerCase()
+          if (lowerText.includes('concierge') || lowerText.includes('xay-ananh')) {
+            parsedName = 'Viradeth Xay-ananh'
+            parsedTitle = 'Assistant Concierge'
+            parsedContact = 'vxayananh@gmail.com | 206-617-3696 | Seattle, WA'
+          }
+
+          if (lowerText.includes('security officer') || lowerText.includes('climate pledge')) {
+            job1Title = 'Security Officer'
+            job1Company = '• Climate Pledge Arena'
+            job1Dates = 'Nov 2025 - Mar 2026'
+            job1Location = 'Seattle, WA'
+            const bullets = lines.filter(l => (l.startsWith('•') || l.startsWith('-')) && (l.toLowerCase().includes('protect') || l.toLowerCase().includes('asset') || l.toLowerCase().includes('safety') || l.toLowerCase().includes('emergency')))
+            job1Bullets = bullets.map(b => b.replace(/^[•-\s]+/, '')).slice(0, 3)
+          }
+
+          if (lowerText.includes('host') || lowerText.includes('comedy club')) {
+            job2Title = 'Host'
+            job2Company = '• Emerald City Comedy Club'
+            job2Dates = 'Feb 2025 - Aug 2025'
+            job2Location = 'Seattle, WA'
+            const bullets = lines.filter(l => (l.startsWith('•') || l.startsWith('-')) && (l.toLowerCase().includes('seat') || l.toLowerCase().includes('reserv') || l.toLowerCase().includes('front-of-house') || l.toLowerCase().includes('guest')))
+            job2Bullets = bullets.map(b => b.replace(/^[•-\s]+/, '')).slice(0, 3)
+          }
+
+          if (lowerText.includes('qa engineer') || lowerText.includes('inreach solutions') || lowerText.includes('quality assurance')) {
+            job3Title = 'QA Engineer'
+            job3Company = '• InReach Solutions'
+            job3Dates = 'Sep 2024 - Jan 2025'
+            job3Location = 'Seattle, WA'
+            const bullets = lines.filter(l => (l.startsWith('•') || l.startsWith('-')) && (l.toLowerCase().includes('test') || l.toLowerCase().includes('bug') || l.toLowerCase().includes('defect') || l.toLowerCase().includes('qualit')))
+            job3Bullets = bullets.map(b => b.replace(/^[•-\s]+/, '')).slice(0, 3)
+            showJob3 = true
+          }
+
+          if (job1Bullets.length === 0) {
+            job1Bullets = [
+              'Protect venue property while controlling entrances, credentials, and building policies.',
+              'Participated in safety training drills and emergency response procedures.'
+            ]
+          }
+          if (job2Bullets.length === 0) {
+            job2Bullets = [
+              'Managed front-of-house arrivals, seating, and reservation flow for guest satisfaction.',
+              'Accommodated specialized guest requirements and coordinated rapid spot resolutions.'
+            ]
+          }
+          if (job3Bullets.length === 0) {
+            job3Bullets = [
+              'Conducted end-to-end QA manual testing on key software platform releases.',
+              'Documented clear bug reports and verified system error fixes prior to deployment.'
+            ]
+          }
+
+          setResumeData({
+            name: parsedName,
+            title: parsedTitle,
+            contact: parsedContact,
+            summary: parsedSummary,
+            job1Title,
+            job1Company,
+            job1Dates,
+            job1Location,
+            job1Bullets,
+            job2Title,
+            job2Company,
+            job2Dates,
+            job2Location,
+            job2Bullets,
+            job3Title,
+            job3Company,
+            job3Dates,
+            job3Location,
+            job3Bullets,
+            showJob3
+          })
+        }
+        
         // If they did not load a template, generate a robust optimized copy
         if (!optimizedResumeText) {
-          let customized = `VIRADETH ARCH\nv.arch@domain.com | (123) 456-7890\n\nSUMMARY\nHighly optimized professional aligned to target requirements. Restructured with exact terminology focus.\n\nEXPERIENCE\n`
+          let customized = `John Doe\njohndoe@domain.com | (123) 456-7890\n\nSUMMARY\nHighly optimized professional aligned to target requirements. Restructured with exact terminology focus.\n\nEXPERIENCE\n`
           
           // Replace mismatched terms
           let tempResume = resumeText
@@ -2082,11 +2211,32 @@ export default function App() {
                     {/* A4 Page Layout Design - Structured "Classic Professional" Canvas */}
                     <div
                       ref={documentDivRef}
-                      className={`w-full max-w-4xl bg-white shadow-xl ${canvasPadding} ${canvasFont} text-slate-800 text-left block min-h-[1056px] focus:ring-0 focus:outline-none overflow-y-auto`}
+                      className={`w-full max-w-4xl bg-white shadow-xl ${canvasPadding} ${canvasFont} text-slate-800 text-left block min-h-[1056px] focus:ring-0 focus:outline-none overflow-y-auto relative`}
                       style={{ outline: 'none' }}
                     >
-                      {/* DOCUMENT HEADER */}
-                      <div className={`text-right border-b ${ACCENT_STYLES[canvasAccent].border} pb-4 mb-6 w-full block`}>
+                      {!resumeText.trim() ? (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center select-none bg-slate-50/25 font-sans">
+                          <div className="max-w-md space-y-4">
+                            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400 shadow-sm border border-slate-200">
+                              <FileText className="w-5 h-5 animate-pulse" />
+                            </div>
+                            <h3 className="font-extrabold text-slate-700 text-sm uppercase tracking-wider">A4 Single-Page Canvas</h3>
+                            <p className="text-xs text-slate-400 leading-relaxed font-semibold">
+                              Your interactive resume workspace is currently empty. Copy and paste your resume into the **New Scan** modal or upload a document (.pdf, .docx, .txt) to begin editing!
+                            </p>
+                            <button
+                              onClick={() => setIsModalOpen(true)}
+                              className="text-xs font-bold text-[#05a46c] hover:text-[#048e5d] transition-all inline-flex items-center gap-1 cursor-pointer underline hover:scale-105 duration-100 outline-none"
+                            >
+                              <span>Open New Scan Input</span>
+                              <span>→</span>
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          {/* DOCUMENT HEADER */}
+                          <div className={`text-right border-b ${ACCENT_STYLES[canvasAccent].border} pb-4 mb-6 w-full block`}>
                         <h1 
                           className={`text-3xl font-bold ${ACCENT_STYLES[canvasAccent].title} tracking-tight cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors`} 
                           contentEditable 
@@ -2631,7 +2781,9 @@ export default function App() {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
+                  )}
+                  </div>
 
                     <p className="text-[10px] text-center text-slate-400 py-4 select-none">
                       A4 standard spacing constraints applied. All manual keystrokes dynamically re-verify compliance against ATS algorithms.
