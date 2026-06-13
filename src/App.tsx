@@ -2908,7 +2908,7 @@ export default function App() {
                           </td>
                           <td className="px-3 py-2.5">
                             <div className="flex flex-col gap-1">
-                              {analysisResults.isDuplicateContactDetected ? (
+                              {!appliedFixes.includes('header') ? (
                                 <span className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-200 font-mono text-[9px] block">
                                   `VIRADETH ARCH` (Top) vs. `Viradeth Xay-ananh` (Body)
                                 </span>
@@ -2918,12 +2918,12 @@ export default function App() {
                                 </span>
                               )}
                               <span className="text-[9px] text-slate-500 font-bold font-mono">
-                                Match Ratio: {analysisResults.keywordFrequencies['duplicate contact audit']?.fraction || (analysisResults.isDuplicateContactDetected ? '2/1' : '1/1')}
+                                Match Ratio: {analysisResults.keywordFrequencies['duplicate contact audit']?.fraction || (!appliedFixes.includes('header') ? '2/1' : '1/1')}
                               </span>
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-slate-600 leading-normal">
-                            {analysisResults.isDuplicateContactDetected ? (
+                            {!appliedFixes.includes('header') ? (
                               <span>
                                 <strong>CRITICAL FIX:</strong> Delete the duplicate identity block inside the experience text. Standardize the document under a single master header.
                               </span>
@@ -2934,7 +2934,7 @@ export default function App() {
                             )}
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            {analysisResults.isDuplicateContactDetected ? (
+                            {!appliedFixes.includes('header') ? (
                               <button
                                 onClick={handleCleanHeader}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
@@ -2945,7 +2945,7 @@ export default function App() {
                             ) : (
                               <div className="flex items-center justify-center">
                                 <button
-                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
                                   disabled
                                 >
                                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -2953,7 +2953,7 @@ export default function App() {
                                 </button>
                                 <button
                                   onClick={handleUndoHeader}
-                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
+                                  className="text-slate-400 hover:text-slate-600 underline text-[11px] ml-2 cursor-pointer transition-colors font-medium"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -2991,7 +2991,7 @@ export default function App() {
                           </td>
                           <td className="px-3 py-2.5">
                             <div className="flex flex-col gap-1">
-                              {!analysisResults.hasLoungeMonitoring ? (
+                              {!appliedFixes.includes('loungeMonitoring') ? (
                                 <span className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-200 font-mono text-[9px] block">
                                   *Missing Club Lounge Monitoring*
                                 </span>
@@ -3006,7 +3006,7 @@ export default function App() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-slate-600 leading-normal">
-                            {!analysisResults.hasLoungeMonitoring ? (
+                            {!appliedFixes.includes('loungeMonitoring') ? (
                               <span>
                                 <strong>ADD METRIC:</strong> Insert: <em>"Monitored club lounge for seating availability, service flow, and guest well-being according to luxury property standards."</em>
                               </span>
@@ -3015,7 +3015,7 @@ export default function App() {
                             )}
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            {!analysisResults.hasLoungeMonitoring ? (
+                            {!appliedFixes.includes('loungeMonitoring') ? (
                               <button
                                 onClick={handleInjectLoungeMonitoring}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
@@ -3026,7 +3026,7 @@ export default function App() {
                             ) : (
                               <div className="flex items-center justify-center">
                                 <button
-                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
                                   disabled
                                 >
                                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -3034,7 +3034,7 @@ export default function App() {
                                 </button>
                                 <button
                                   onClick={handleUndoLoungeMonitoring}
-                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
+                                  className="text-slate-400 hover:text-slate-600 underline text-[11px] ml-2 cursor-pointer transition-colors font-medium"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3051,7 +3051,7 @@ export default function App() {
                           </td>
                           <td className="px-3 py-2.5">
                             <div className="flex flex-col gap-1">
-                              {!analysisResults.hasLoungeChecklists ? (
+                              {!appliedFixes.includes('loungeChecklists') ? (
                                 <span className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-200 font-mono text-[9px] block">
                                   *Missing Operational Checklists*
                                 </span>
@@ -3066,7 +3066,7 @@ export default function App() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-slate-600 leading-normal">
-                            {!analysisResults.hasLoungeChecklists ? (
+                            {!appliedFixes.includes('loungeChecklists') ? (
                               <span>
                                 <strong>ADD KEYWORD:</strong> Insert: <em>"Reviewed shift logs and daily memo books to document and communicate pertinent information across shifts."</em>
                               </span>
@@ -3075,7 +3075,7 @@ export default function App() {
                             )}
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            {!analysisResults.hasLoungeChecklists ? (
+                            {!appliedFixes.includes('loungeChecklists') ? (
                               <button
                                 onClick={handleInjectLoungeChecklists}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
@@ -3086,7 +3086,7 @@ export default function App() {
                             ) : (
                               <div className="flex items-center justify-center">
                                 <button
-                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
                                   disabled
                                 >
                                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -3094,7 +3094,7 @@ export default function App() {
                                 </button>
                                 <button
                                   onClick={handleUndoLoungeChecklists}
-                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
+                                  className="text-slate-400 hover:text-slate-600 underline text-[11px] ml-2 cursor-pointer transition-colors font-medium"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3111,7 +3111,7 @@ export default function App() {
                           </td>
                           <td className="px-3 py-2.5">
                             <div className="flex flex-col gap-1">
-                              {!analysisResults.hasSafetyCompliance ? (
+                              {!appliedFixes.includes('safetyCompliance') ? (
                                 <span className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-200 font-mono text-[9px] block">
                                   *Missing Safety Compliance*
                                 </span>
@@ -3126,7 +3126,7 @@ export default function App() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-slate-600 leading-normal">
-                            {!analysisResults.hasSafetyCompliance ? (
+                            {!appliedFixes.includes('safetyCompliance') ? (
                               <span>
                                 <strong>ADD COMPLIANCE:</strong> Insert: <em>"Reported accidents, injuries, and unsafe work conditions in accordance with standard regulatory procedures."</em>
                               </span>
@@ -3135,7 +3135,7 @@ export default function App() {
                             )}
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            {!analysisResults.hasSafetyCompliance ? (
+                            {!appliedFixes.includes('safetyCompliance') ? (
                               <button
                                 onClick={handleInjectSafetyCompliance}
                                 className="bg-rose-100 hover:bg-rose-200 text-rose-800 text-[9px] font-bold px-2 py-1 rounded-md border border-rose-200 transition-colors shrink-0"
@@ -3146,7 +3146,7 @@ export default function App() {
                             ) : (
                               <div className="flex items-center justify-center">
                                 <button
-                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
                                   disabled
                                 >
                                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -3154,7 +3154,7 @@ export default function App() {
                                 </button>
                                 <button
                                   onClick={handleUndoSafetyCompliance}
-                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
+                                  className="text-slate-400 hover:text-slate-600 underline text-[11px] ml-2 cursor-pointer transition-colors font-medium"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3192,7 +3192,7 @@ export default function App() {
                           </td>
                           <td className="px-3 py-2.5">
                             <div className="flex flex-col gap-1">
-                              {!analysisResults.hasSwapAnticipatePhrase ? (
+                              {!appliedFixes.includes('swapAnticipate') ? (
                                 <span className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-200 font-mono text-[9px] block">
                                   `Anticipate and address`
                                 </span>
@@ -3207,7 +3207,7 @@ export default function App() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-slate-600 leading-normal">
-                            {!analysisResults.hasSwapAnticipatePhrase ? (
+                            {!appliedFixes.includes('swapAnticipate') ? (
                               <span>
                                 <strong>SWAP PHRASE:</strong> Change to: <em>"Anticipate guests' service needs with genuine appreciation."</em>
                               </span>
@@ -3216,7 +3216,7 @@ export default function App() {
                             )}
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            {!analysisResults.hasSwapAnticipatePhrase ? (
+                            {!appliedFixes.includes('swapAnticipate') ? (
                               <button
                                 onClick={handleSwapAnticipate}
                                 className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-[9px] font-bold px-2 py-1 rounded-md border border-amber-200 transition-colors shrink-0"
@@ -3227,7 +3227,7 @@ export default function App() {
                             ) : (
                               <div className="flex items-center justify-center">
                                 <button
-                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
                                   disabled
                                 >
                                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -3235,7 +3235,7 @@ export default function App() {
                                 </button>
                                 <button
                                   onClick={handleUndoSwapAnticipate}
-                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
+                                  className="text-slate-400 hover:text-slate-600 underline text-[11px] ml-2 cursor-pointer transition-colors font-medium"
                                   title="Undo Fix"
                                 >
                                   Undo
@@ -3252,7 +3252,7 @@ export default function App() {
                           </td>
                           <td className="px-3 py-2.5">
                             <div className="flex flex-col gap-1">
-                              {!analysisResults.hasSwapAssetsPhrase ? (
+                              {!appliedFixes.includes('swapAssets') ? (
                                 <span className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-200 font-mono text-[9px] block">
                                   `Protect company assets`
                                 </span>
@@ -3267,7 +3267,7 @@ export default function App() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-slate-600 leading-normal">
-                            {!analysisResults.hasSwapAssetsPhrase ? (
+                            {!appliedFixes.includes('swapAssets') ? (
                               <span>
                                 <strong>SWAP PHRASE:</strong> Change to: <em>"Maintain confidentiality of proprietary information and protect company assets."</em>
                               </span>
@@ -3276,7 +3276,7 @@ export default function App() {
                             )}
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            {!analysisResults.hasSwapAssetsPhrase ? (
+                            {!appliedFixes.includes('swapAssets') ? (
                               <button
                                 onClick={handleSwapAssets}
                                 className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-[9px] font-bold px-2 py-1 rounded-md border border-amber-200 transition-colors shrink-0"
@@ -3287,7 +3287,7 @@ export default function App() {
                             ) : (
                               <div className="flex items-center justify-center">
                                 <button
-                                  className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 font-medium px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
+                                  className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-3 py-1 rounded text-xs flex items-center gap-1 transition-all duration-200"
                                   disabled
                                 >
                                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -3295,7 +3295,7 @@ export default function App() {
                                 </button>
                                 <button
                                   onClick={handleUndoSwapAssets}
-                                  className="text-slate-400 hover:text-slate-600 underline text-[10px] ml-2 cursor-pointer transition-colors"
+                                  className="text-slate-400 hover:text-slate-600 underline text-[11px] ml-2 cursor-pointer transition-colors font-medium"
                                   title="Undo Fix"
                                 >
                                   Undo
