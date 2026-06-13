@@ -3376,19 +3376,34 @@ export default function App() {
                       Target score adapts dynamically to your manual updates.
                     </p>
                     
-                    {/* Glowing One-Click Auto-Optimize Button */}
-                    <button
-                      onClick={handleAutoOptimize}
-                      disabled={isAutoOptimizing || analysisResults.matchScore >= 95}
-                      className={`mt-2.5 relative overflow-hidden font-extrabold text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer outline-none select-none ${
-                        analysisResults.matchScore >= 95
-                          ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'
-                          : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-[0_0_15px_rgba(5,164,108,0.3)] hover:shadow-[0_0_20px_rgba(5,164,108,0.5)] hover:scale-102 hover:rotate-1'
-                      }`}
-                    >
-                      <Zap className={`w-3 h-3 ${isAutoOptimizing ? 'animate-bounce text-yellow-300' : 'text-yellow-300 animate-pulse'}`} />
-                      <span>{analysisResults.matchScore >= 95 ? 'Fully Optimized' : isAutoOptimizing ? `Applying Audit ${optimizingStep}/5...` : '⚡ Auto-Optimize Resume'}</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                      {/* Glowing One-Click Auto-Optimize Button */}
+                      <button
+                        onClick={handleAutoOptimize}
+                        disabled={isAutoOptimizing || analysisResults.matchScore >= 95}
+                        className={`relative overflow-hidden font-extrabold text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer outline-none select-none ${
+                          analysisResults.matchScore >= 95
+                            ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'
+                            : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-[0_0_15px_rgba(5,164,108,0.3)] hover:shadow-[0_0_20px_rgba(5,164,108,0.5)] hover:scale-102 hover:rotate-1'
+                        }`}
+                      >
+                        <Zap className={`w-3 h-3 ${isAutoOptimizing ? 'animate-bounce text-yellow-300' : 'text-yellow-300 animate-pulse'}`} />
+                        <span>{analysisResults.matchScore >= 95 ? 'Fully Optimized' : isAutoOptimizing ? `Applying Audit ${optimizingStep}/5...` : '⚡ Auto-Optimize Resume'}</span>
+                      </button>
+
+                      {/* Recruiter Eye Scanner Toggle - Secondary Fallback in Right Panel */}
+                      <button
+                        onClick={() => setIsParserSimulatorEnabled(!isParserSimulatorEnabled)}
+                        className={`relative overflow-hidden font-extrabold text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer outline-none select-none border ${
+                          isParserSimulatorEnabled 
+                            ? 'bg-indigo-50 text-indigo-700 border-indigo-200 shadow-[0_0_12px_rgba(99,102,241,0.25)]' 
+                            : 'bg-white text-slate-500 hover:text-indigo-600 border-slate-200'
+                        }`}
+                      >
+                        <Eye className={`w-3 h-3 ${isParserSimulatorEnabled ? 'text-indigo-500 animate-pulse' : 'text-slate-400'}`} />
+                        <span>{isParserSimulatorEnabled ? 'Recruiter Eye: ON' : '👁️ Recruiter Eye'}</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Radial score gauge */}
