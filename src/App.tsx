@@ -784,8 +784,6 @@ export default function App() {
   const [showSavedDropdown, setShowSavedDropdown] = useState(false)
   const [showDownloadDropdown, setShowDownloadDropdown] = useState(false)
   const [activeTab, setActiveTab] = useState('AI Optimizer')
-  
-  const [selectedStrategy, setSelectedStrategy] = useState<'fast' | 'deep' | 'one-page'>('one-page')
 
   // Real-time keyword alignment states
   const [optimizedResumeText, setOptimizedResumeText] = useState(CLASSIC_PROFESSIONAL_DEFAULT_TEXT)
@@ -3353,55 +3351,29 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Strategy List */}
+              {/* Feature Spotlight Content */}
               <div className="p-6 space-y-4">
-                {[
-                  {
-                    id: 'fast',
-                    title: '1. Fast optimization',
-                    description: 'Lighter optimization focusing on key improvements.',
-                    duration: '⏱️ 10–20 SECONDS'
-                  },
-                  {
-                    id: 'deep',
-                    title: '2. Deep optimization',
-                    description: 'Thorough, context-aware rewrite using your resume + job description.',
-                    duration: '⏱️ 50–60 SECONDS'
-                  },
-                  {
-                    id: 'one-page',
-                    title: '3. One-page focus',
-                    description: 'Reduce content to what matters most for this job. Guarantees the generated resume remains clean, dense, and exactly one page.',
-                    duration: '⏱️ 30–40 SECONDS'
-                  }
-                ].map((strategy) => (
-                  <label
-                    key={strategy.id}
-                    onClick={() => setSelectedStrategy(strategy.id as any)}
-                    className={`flex items-start gap-4 p-4 border rounded-xl cursor-pointer transition-all select-none hover:bg-slate-50/50 ${
-                      selectedStrategy === strategy.id
-                        ? 'border-[#05a46c] bg-[#e6f6f1]/20 shadow-sm'
-                        : 'border-slate-200 bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="strategy"
-                      checked={selectedStrategy === strategy.id}
-                      onChange={() => setSelectedStrategy(strategy.id as any)}
-                      className="mt-1 h-4.5 w-4.5 text-[#05a46c] focus:ring-[#05a46c]"
-                    />
-                    <div className="space-y-1">
+                <div className="p-5 border border-emerald-500 bg-emerald-50/30 rounded-xl transition-all shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-[#e6f6f1] text-[#05a46c] rounded-full shrink-0 mt-0.5 shadow-sm">
+                      <Sparkles className="w-5 h-5 animate-pulse" />
+                    </div>
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-slate-800">{strategy.title}</span>
-                        <span className="text-[9px] bg-slate-100 text-slate-500 font-bold px-1.5 py-0.5 rounded">
-                          {strategy.duration}
+                        <span className="font-extrabold text-sm text-slate-800">One-Page Focus Strategy</span>
+                        <span className="text-[9px] bg-emerald-100 text-emerald-800 font-extrabold px-1.5 py-0.5 rounded select-none">
+                          ⚡ STANDARD
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 leading-relaxed">{strategy.description}</p>
+                      <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                        Automatically reduce content redundancy to what matters most for this role. Guarantees the generated resume remains clean, dense, and fits **exactly on a single A4 letter page** without breaking margins.
+                      </p>
+                      <div className="text-[10px] text-emerald-700 font-bold select-none pt-1">
+                        ⏱️ ETA: 30–40 SECONDS
+                      </div>
                     </div>
-                  </label>
-                ))}
+                  </div>
+                </div>
               </div>
 
               {/* Footer */}
