@@ -64,25 +64,25 @@ export interface ResumeData {
 }
 
 export const initialResumeData: ResumeData = {
-  name: 'Viradeth Xay-ananh',
-  title: 'Assistant Concierge',
-  contact: 'vxayananh@gmail.com | 206-617-3696 | Seattle, WA',
-  summary: 'Guest-focused front desk, concierge, and hospitality professional experienced in managing high-volume arrivals, front-of-house operations, and personalized VIP service. Proven ability to coordinate complex reservations, accommodate unique guest requests, and handle special events while strictly maintaining confidentiality. Adept at balancing premium guest satisfaction with rigorous Quality Control, safety training compliance, and asset protection.',
-  job1Title: 'Security Officer',
-  job1Company: '• Climate Pledge Arena',
+  name: 'John Doe',
+  title: 'Quality Assurance Specialist',
+  contact: 'johndoe@domain.com | (123) 456-7890 | Seattle, WA',
+  summary: 'Detail-oriented Quality Assurance Specialist with 4 years of experience checking software products, identifying defects, and writing detailed bug reports. Focused on manual testing, reviewing standards, and coordinating cross-functional alignments to meet product expectations.',
+  job1Title: 'QA Associate',
+  job1Company: '• Tech Solutions Inc.',
   job1Dates: 'Nov 2025 - Mar 2026',
   job1Location: 'Seattle, WA',
   job1Bullets: [
-    'Protect company assets and venue property while controlling entrances, verifying credentials, and enforcing building policies to safeguard up to 17,000 daily visitors.',
-    'Participated in regular safety training drills and emergency-response procedures alongside operations staff to resolve incidents quickly and minimize service escalations.'
+    'Conducted manual testing on web applications and coordinated with dev teams to identify and document defects.',
+    'Ensured product standards were strictly met prior to releasing major production shipments.'
   ],
-  job2Title: 'Host',
-  job2Company: '• Emerald City Comedy Club',
+  job2Title: 'Test Engineer',
+  job2Company: '• Soft Systems Corp.',
   job2Dates: 'Feb 2025 - Aug 2025',
   job2Location: 'Seattle, WA',
   job2Bullets: [
-    'Managed front-of-house arrivals, seating arrangements, and detailed reservations for nightly audiences up to 150, maximizing seating throughput and guest satisfaction.',
-    'Fulfilled specialized guest requests, arranged VIP seating for special events, and coordinated with third-party vendors to facilitate rapid on-the-spot resolutions.'
+    'Reviewed product specification checklists and mapped out detailed test scenarios for software release logs.',
+    'Discovered and reported software performance errors to maximize customer well-being and product quality.'
   ],
   job3Title: '',
   job3Company: '',
@@ -116,36 +116,35 @@ export const getResumePlainText = (data: ResumeData): string => {
   ].join('\n')
 }
 
-const CLASSIC_PROFESSIONAL_DEFAULT_TEXT = `VIRADETH XAY-ANANH
-Assistant Concierge | vxayananh@gmail.com | 206-617-3696 | Seattle, WA
+const CLASSIC_PROFESSIONAL_DEFAULT_TEXT = `John Doe
+Quality Assurance Specialist | johndoe@domain.com | (123) 456-7890 | Seattle, WA
 
 --------------------------------------------------------------------------------
 PROFESSIONAL SUMMARY
-Guest-focused front desk, concierge, and hospitality professional experienced in managing high-volume arrivals, front-of-house operations, and personalized VIP service. 
+Detail-oriented Quality Assurance Specialist with 4 years of experience checking software products, identifying defects, and writing detailed bug reports. Focused on manual testing, reviewing standards, and coordinating cross-functional alignments to meet product expectations.
 
 --------------------------------------------------------------------------------
 PROFESSIONAL EXPERIENCE
 
-Security Officer
-Climate Pledge Arena • Seattle, WA | Nov 2025 - Mar 2026
-• Protect company assets and venue property while controlling entrances and verifying credentials.
-• Participated in regular safety training drills and emergency-response procedures.
+QA Associate
+Tech Solutions Inc. • Seattle, WA | Nov 2025 - Mar 2026
+• Conducted manual testing on web applications and coordinated with dev teams to identify and document defects.
+• Ensured product standards were strictly met prior to releasing major production shipments.
 
-Host
-Emerald City Comedy Club • Seattle, WA | Feb 2025 - Aug 2025
-• Managed front-of-house arrivals, seating arrangements, and detailed reservations.
-• Fulfilled specialized guest requests and arranged VIP seating for headliners.`;
+Test Engineer
+Soft Systems Corp. • Seattle, WA | Feb 2025 - Aug 2025
+• Reviewed product specification checklists and mapped out detailed test scenarios for software release logs.
+• Discovered and reported software performance errors to maximize customer well-being and product quality.`;
 
-const DEFAULT_JOB_DESCRIPTION = `Position: Assistant Concierge / Hospitality Coordinator
-Location: Seattle, WA (Luxury Property)
+const DEFAULT_JOB_DESCRIPTION = `Position: Quality Assurance Specialist / Coordinator
+Location: Seattle, WA (Tech Solutions Inc.)
 
 Core Responsibilities:
-- Manage front-of-house arrivals, seating, and reservation systems.
-- Anticipate guests' service needs with genuine appreciation to ensure a premium guest experience.
-- Conduct club lounge monitoring for seating availability, service flow, and guest well-being according to luxury property standards.
-- Review shift logs and daily memo books to document and communicate pertinent information across shifts.
-- Maintain confidentiality of proprietary information and protect company assets.
-- Report accidents, injuries, and unsafe work conditions in accordance with safety compliance guidelines and standard regulatory procedures.`;
+- Conduct software manual testing and document bug reports.
+- Ensure product standards are met to improve software performance.
+- Perform product specification reviews and shift logs documentation.
+- Maintain confidentiality of proprietary source code.
+- Report system errors in accordance with standard test criteria.`;
 
 // Industry templates for universal ATS testing
 interface IndustryTemplate {
@@ -779,14 +778,14 @@ export default function App() {
   const [optimizationProgress, setOptimizationProgress] = useState(0)
   const [loadingStatusText, setLoadingStatusText] = useState('')
   
-  const [resumeText, setResumeText] = useState(CLASSIC_PROFESSIONAL_DEFAULT_TEXT)
-  const [jobDescriptionText, setJobDescriptionText] = useState(DEFAULT_JOB_DESCRIPTION)
+  const [resumeText, setResumeText] = useState("")
+  const [jobDescriptionText, setJobDescriptionText] = useState("")
   const [showSavedDropdown, setShowSavedDropdown] = useState(false)
   const [showDownloadDropdown, setShowDownloadDropdown] = useState(false)
   const [activeTab, setActiveTab] = useState('AI Optimizer')
 
   // Real-time keyword alignment states
-  const [optimizedResumeText, setOptimizedResumeText] = useState(CLASSIC_PROFESSIONAL_DEFAULT_TEXT)
+  const [optimizedResumeText, setOptimizedResumeText] = useState("")
   const [analysisResults, setAnalysisResults] = useState({
     matchScore: 45,
     presentSkills: [] as string[],
@@ -3224,7 +3223,7 @@ export default function App() {
                     <textarea
                       value={resumeText}
                       onChange={(e) => setResumeText(e.target.value)}
-                      placeholder="Copy and paste resume here."
+                      placeholder="Copy and paste resume text here, or use the drag & drop uploader..."
                       className="w-full flex-1 p-4 text-sm bg-[#f8fafc] border border-slate-200 rounded-lg placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:bg-white focus:ring-1 focus:ring-slate-300 transition-all resize-none custom-scrollbar font-sans min-h-[220px]"
                     ></textarea>
 
@@ -3271,7 +3270,7 @@ export default function App() {
                     <textarea
                       value={jobDescriptionText}
                       onChange={(e) => setJobDescriptionText(e.target.value)}
-                      placeholder="Copy and paste job description here. Aim to exclude: Benefits, Perks, and Legal Disclaimers"
+                      placeholder="Paste the target job description requirements here..."
                       className="w-full flex-1 p-4 text-sm bg-[#f8fafc] border border-slate-200 rounded-lg placeholder-slate-400 focus:outline-none focus:border-slate-300 focus:bg-white focus:ring-1 focus:ring-slate-300 transition-all resize-none custom-scrollbar font-sans min-h-[220px]"
                     ></textarea>
 
