@@ -1819,12 +1819,32 @@ export default function App() {
         span.parentNode?.replaceChild(textNode, span)
       })
 
-      // 5. Normalize the cloned page container styles for full-bleed printing
-      clone.className = `w-full bg-white ${canvasPadding} ${canvasFont} text-slate-800 text-left block`
+      // 5. Normalize the cloned page container styles for full-bleed printing and apply strict scaling constraints
+      clone.className = `w-full bg-white ${canvasPadding} ${canvasFont} text-slate-800 text-left block canvas-print-node`
       clone.style.boxShadow = 'none'
       clone.style.minHeight = 'auto'
       clone.style.height = 'auto'
       clone.style.overflow = 'visible'
+      clone.style.transform = 'scale(0.96)'
+      clone.style.transformOrigin = 'top center'
+
+      // 6. Guarantee strict data isolation and clean up bullet points to prevent nested loop contamination
+      const uls = clone.querySelectorAll('ul')
+      if (uls.length >= 2) {
+        const job1Ul = uls[0]
+        const job2Ul = resumeData.showJob3 ? uls[2] : uls[1]
+        const job3Ul = resumeData.showJob3 ? uls[1] : null
+
+        if (job1Ul) {
+          job1Ul.innerHTML = resumeData.job1Bullets.map(b => `<li style="margin-bottom: 4px; color: #334155; list-style-type: disc; margin-left: 20px;">${b}</li>`).join('')
+        }
+        if (job2Ul) {
+          job2Ul.innerHTML = resumeData.job2Bullets.map(b => `<li style="margin-bottom: 4px; color: #334155; list-style-type: disc; margin-left: 20px;">${b}</li>`).join('')
+        }
+        if (job3Ul && resumeData.showJob3) {
+          job3Ul.innerHTML = (resumeData.job3Bullets || []).map(b => `<li style="margin-bottom: 4px; color: #334155; list-style-type: disc; margin-left: 20px;">${b}</li>`).join('')
+        }
+      }
 
       const opt = {
         margin:       0,
