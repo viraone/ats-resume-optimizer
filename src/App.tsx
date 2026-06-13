@@ -797,6 +797,11 @@ export default function App() {
   const [zoomScale, setZoomScale] = useState('1.0') // default zoom (100%)
   const [lineSpacing, setLineSpacing] = useState('1.15') // default spacing
   
+  // YC Demo Auto-Optimize States
+  const [isAutoOptimizing, setIsAutoOptimizing] = useState(false)
+  const [optimizingStep, setOptimizingStep] = useState(0)
+  const [showConfetti, setShowConfetti] = useState(false)
+  
   const rulerRef = useRef<HTMLDivElement>(null)
 
   const handleLeftMouseDown = (e: React.MouseEvent) => {
@@ -1451,6 +1456,74 @@ export default function App() {
     }
   }, [resumeData, view])
 
+  // One-Click Demo Auto-Optimize Pipeline
+  const handleAutoOptimize = () => {
+    if (isAutoOptimizing) return
+    setIsAutoOptimizing(true)
+    setOptimizingStep(1)
+
+    // Step 1: Clean Header
+    setTimeout(() => {
+      handleCleanHeader()
+      if (documentDivRef.current) {
+        documentDivRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+      setOptimizingStep(2)
+    }, 800)
+
+    // Step 2: Lounge Monitoring
+    setTimeout(() => {
+      handleInjectLoungeMonitoring()
+      const job1El = document.getElementById('job1Title')
+      if (job1El) {
+        job1El.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      setOptimizingStep(3)
+    }, 1600)
+
+    // Step 3: Lounge Checklists
+    setTimeout(() => {
+      handleInjectLoungeChecklists()
+      const job2El = document.getElementById('job2Title')
+      if (job2El) {
+        job2El.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      setOptimizingStep(4)
+    }, 2400)
+
+    // Step 4: Safety Compliance
+    setTimeout(() => {
+      handleInjectSafetyCompliance()
+      const job1El = document.getElementById('job1Title')
+      if (job1El) {
+        job1El.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      setOptimizingStep(5)
+    }, 3200)
+
+    // Step 5: Word Swaps
+    setTimeout(() => {
+      handleSwapAnticipate()
+      handleSwapAssets()
+      const job2El = document.getElementById('job2Title')
+      if (job2El) {
+        job2El.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      setOptimizingStep(6)
+    }, 4000)
+
+    // Step 6: Confetti & Wrap Up
+    setTimeout(() => {
+      setShowConfetti(true)
+      setIsAutoOptimizing(false)
+      setOptimizingStep(0)
+      
+      setTimeout(() => {
+        setShowConfetti(false)
+      }, 5000)
+    }, 4800)
+  }
+
   // Quick-fix: Cleans duplicate contact info headers
   const handleCleanHeader = () => {
     applyDataChangeWithHistory(prev => ({
@@ -1838,6 +1911,57 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-[#f8fafc] overflow-hidden font-sans antialiased text-[#1e293b]">
+      {/* Premium Falling Confetti Celebration (Custom CSS Driven) */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-[150] overflow-hidden">
+          {Array.from({ length: 65 }).map((_, i) => {
+            const left = Math.random() * 100 // %
+            const delay = Math.random() * 3.5 // seconds
+            const duration = 2.5 + Math.random() * 2.5 // seconds
+            const size = 6 + Math.random() * 9 // px
+            const colors = ['#05a46c', '#3b82f6', '#10b981', '#f43f5e', '#eab308', '#a855f7']
+            const color = colors[Math.floor(Math.random() * colors.length)]
+            return (
+              <div
+                key={i}
+                className="absolute rounded-xs animate-confetti-fall"
+                style={{
+                  left: `${left}%`,
+                  top: `-20px`,
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  backgroundColor: color,
+                  animationDelay: `${delay}s`,
+                  animationDuration: `${duration}s`,
+                  opacity: 0.85,
+                  transform: `rotate(${Math.random() * 360}deg)`
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Embedded CSS for YC Demo Keyframes */}
+      <style>{`
+        @keyframes confetti-fall {
+          0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(105vh) rotate(720deg);
+            opacity: 0;
+          }
+        }
+        .animate-confetti-fall {
+          animation-name: confetti-fall;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          will-change: transform, opacity;
+        }
+      `}</style>
+
       {/* Sidebar Layout */}
       <aside className="w-64 bg-[#1c3d5a] text-white flex flex-col z-10 select-none shrink-0">
         <div className="p-5 border-b border-slate-700/50 flex items-center gap-3">
@@ -3142,13 +3266,34 @@ export default function App() {
               <div className="flex-1 max-w-[50%] w-full bg-white overflow-y-auto custom-scrollbar flex flex-col p-6 space-y-6 shrink-0 z-10 shadow-sm border border-slate-200 rounded-xl">
                 
                 {/* 1. Score Meter Reference Widget */}
-                <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50 flex items-center justify-between">
-                  <div className="space-y-1 select-none">
+                <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/50 flex items-center justify-between relative group/score">
+                  <div className="space-y-1 select-none flex-1 pr-2">
                     <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">ATS Score Panel</span>
-                    <h4 className="font-extrabold text-sm text-slate-800 leading-none">Real-Time Alignment</h4>
+                    <h4 className="font-extrabold text-sm text-slate-800 leading-none flex items-center gap-1.5">
+                      Real-Time Alignment
+                      {isAutoOptimizing && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-medium bg-emerald-100 text-emerald-800 animate-pulse">
+                          Optimizing...
+                        </span>
+                      )}
+                    </h4>
                     <p className="text-[11px] text-slate-500 leading-snug mt-1">
                       Target score adapts dynamically to your manual updates.
                     </p>
+                    
+                    {/* Glowing One-Click Auto-Optimize Button */}
+                    <button
+                      onClick={handleAutoOptimize}
+                      disabled={isAutoOptimizing || analysisResults.matchScore >= 95}
+                      className={`mt-2.5 relative overflow-hidden font-extrabold text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer outline-none select-none ${
+                        analysisResults.matchScore >= 95
+                          ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'
+                          : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-[0_0_15px_rgba(5,164,108,0.3)] hover:shadow-[0_0_20px_rgba(5,164,108,0.5)] hover:scale-102 hover:rotate-1'
+                      }`}
+                    >
+                      <Zap className={`w-3 h-3 ${isAutoOptimizing ? 'animate-bounce text-yellow-300' : 'text-yellow-300 animate-pulse'}`} />
+                      <span>{analysisResults.matchScore >= 95 ? 'Fully Optimized' : isAutoOptimizing ? `Applying Audit ${optimizingStep}/5...` : '⚡ Auto-Optimize Resume'}</span>
+                    </button>
                   </div>
 
                   {/* Radial score gauge */}
