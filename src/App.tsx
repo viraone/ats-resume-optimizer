@@ -2377,6 +2377,8 @@ export default function App() {
 
                         {/* JOB ENTRY 1 */}
                         <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
+                          {/* Dynamic left accent indicator bar for interactive editing focus */}
+                          <div className="border-accent-bar absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 print:hidden select-none pointer-events-none"></div>
                           <div className="job-header-row flex justify-between items-baseline w-full">
                             <div>
                               <span 
@@ -2549,8 +2551,8 @@ export default function App() {
                         {/* DYNAMIC JOB ENTRY 3 (INSERTED SECTION NODE) */}
                         {resumeData.showJob3 && (
                           <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200 animate-fadeIn">
-                            {/* Dynamic Inserted Left Accent Indicator Bar */}
-                            <div className="absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded select-none pointer-events-none"></div>
+                            {/* Dynamic left accent indicator bar for interactive editing focus */}
+                            <div className="border-accent-bar absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 print:hidden select-none pointer-events-none"></div>
                             <div className="job-header-row flex justify-between items-baseline w-full">
                               <div>
                                 <span 
@@ -2710,6 +2712,8 @@ export default function App() {
 
                         {/* JOB ENTRY 2 */}
                         <div className="mt-4 mb-5 block w-full group relative pl-0 ml-0 transition-all duration-200">
+                          {/* Dynamic left accent indicator bar for interactive editing focus */}
+                          <div className="border-accent-bar absolute -left-3 top-0 h-full w-0.5 bg-emerald-400 rounded opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 print:hidden select-none pointer-events-none"></div>
                           <div className="job-header-row flex justify-between items-baseline w-full">
                             <div>
                               <span 
