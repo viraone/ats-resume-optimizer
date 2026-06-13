@@ -791,6 +791,60 @@ export default function App() {
   const [canvasFont, setCanvasFont] = useState<'font-sans' | 'font-serif' | 'font-mono'>('font-sans')
   const [canvasAccent, setCanvasAccent] = useState<'slate' | 'navy' | 'emerald' | 'bronze'>('slate')
   
+  // Google Docs Word Processor States
+  const [rulerLeftIndent, setRulerLeftIndent] = useState(48) // default in px
+  const [rulerRightIndent, setRulerRightIndent] = useState(48) // default in px
+  const [zoomScale, setZoomScale] = useState('1.0') // default zoom (100%)
+  const [lineSpacing, setLineSpacing] = useState('1.15') // default spacing
+  
+  const rulerRef = useRef<HTMLDivElement>(null)
+
+  const handleLeftMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX
+    const startLeft = rulerLeftIndent
+    
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (rulerRef.current) {
+        const rect = rulerRef.current.getBoundingClientRect()
+        const deltaX = moveEvent.clientX - startX
+        const newLeft = Math.max(0, Math.min(rect.width * 0.4, startLeft + deltaX))
+        setRulerLeftIndent(newLeft)
+      }
+    }
+    
+    const handleMouseUp = () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+    
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+  }
+
+  const handleRightMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX
+    const startRight = rulerRightIndent
+    
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (rulerRef.current) {
+        const rect = rulerRef.current.getBoundingClientRect()
+        const deltaX = startX - moveEvent.clientX
+        const newRight = Math.max(0, Math.min(rect.width * 0.4, startRight + deltaX))
+        setRulerRightIndent(newRight)
+      }
+    }
+    
+    const handleMouseUp = () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+    
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+  }
+  
   // Real-Time Keyword Spotlight States
   const [focusedField, setFocusedField] = useState<keyof ResumeData | null>(null)
   const [isSpotlightEnabled, setIsSpotlightEnabled] = useState<boolean>(true)
@@ -2270,12 +2324,235 @@ export default function App() {
                 <div className="flex-1 overflow-y-auto p-8 flex justify-center bg-slate-50 custom-scrollbar">
                   <div className="w-full max-w-[680px] flex flex-col">
                     
-                    {/* A4 Page Layout Design - Structured "Classic Professional" Canvas */}
-                    <div
-                      ref={documentDivRef}
-                      className={`w-full max-w-4xl bg-white shadow-xl ${canvasPadding} ${canvasFont} text-slate-800 text-left block min-h-[1056px] focus:ring-0 focus:outline-none overflow-y-auto relative`}
-                      style={{ outline: 'none' }}
+                    {/* Google Docs Word Processor Formatting Toolbar */}
+                    <div className="w-full bg-white border border-slate-200 rounded-t-lg px-3 py-1.5 flex items-center justify-between gap-1 select-none shadow-xs text-xs text-slate-600 font-sans shrink-0">
+                      <div className="flex items-center gap-1 overflow-x-auto custom-scrollbar flex-1 py-0.5">
+                        {/* Zoom scale select */}
+                        <div className="flex items-center" title="Zoom scale">
+                          <select
+                            value={zoomScale}
+                            onChange={(e) => setZoomScale(e.target.value)}
+                            className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-700 px-1.5 py-1 rounded cursor-pointer outline-none focus:ring-1 focus:ring-slate-300"
+                          >
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1.0">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                          </select>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                        {/* Style Select */}
+                        <div className="flex items-center" title="Text style template">
+                          <select
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                document.execCommand('formatBlock', false, e.target.value)
+                                e.target.value = '' // reset select
+                              }
+                            }}
+                            defaultValue=""
+                            className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-700 px-1.5 py-1 rounded cursor-pointer outline-none focus:ring-1 focus:ring-slate-300 w-24"
+                          >
+                            <option value="" disabled>Style...</option>
+                            <option value="p">Normal Text</option>
+                            <option value="h1">Title</option>
+                            <option value="h3">Subtitle</option>
+                            <option value="h2">Heading 1</option>
+                            <option value="h4">Heading 2</option>
+                          </select>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                        {/* Typography styles: B, I, U */}
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            onClick={() => document.execCommand('bold', false)}
+                            className="p-1 hover:bg-slate-100 rounded font-black text-[12px] text-slate-800 transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Bold (Ctrl+B)"
+                          >
+                            B
+                          </button>
+                          <button
+                            onClick={() => document.execCommand('italic', false)}
+                            className="p-1 hover:bg-slate-100 rounded italic font-serif text-[12px] text-slate-800 transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Italic (Ctrl+I)"
+                          >
+                            I
+                          </button>
+                          <button
+                            onClick={() => document.execCommand('underline', false)}
+                            className="p-1 hover:bg-slate-100 rounded underline text-[12px] text-slate-800 transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Underline (Ctrl+U)"
+                          >
+                            U
+                          </button>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                        {/* Alignments */}
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            onClick={() => document.execCommand('justifyLeft', false)}
+                            className="p-1 hover:bg-slate-100 rounded text-[11px] transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Align Left"
+                          >
+                            <span className="text-sm">|⫵</span>
+                          </button>
+                          <button
+                            onClick={() => document.execCommand('justifyCenter', false)}
+                            className="p-1 hover:bg-slate-100 rounded text-[11px] transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Align Center"
+                          >
+                            <span className="text-sm">⫵</span>
+                          </button>
+                          <button
+                            onClick={() => document.execCommand('justifyRight', false)}
+                            className="p-1 hover:bg-slate-100 rounded text-[11px] transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Align Right"
+                          >
+                            <span className="text-sm">⫵|</span>
+                          </button>
+                          <button
+                            onClick={() => document.execCommand('justifyFull', false)}
+                            className="p-1 hover:bg-slate-100 rounded text-[11px] transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Justified"
+                          >
+                            <span className="text-xs">|||</span>
+                          </button>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                        {/* Line Spacing */}
+                        <div className="flex items-center gap-1" title="Line Spacing">
+                          <select
+                            value={lineSpacing}
+                            onChange={(e) => setLineSpacing(e.target.value)}
+                            className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-700 px-1 py-1 rounded cursor-pointer outline-none focus:ring-1 focus:ring-slate-300 w-16"
+                          >
+                            <option value="1.0">Single</option>
+                            <option value="1.15">1.15</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2.0">Double</option>
+                          </select>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                        {/* List Toggles */}
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            onClick={() => document.execCommand('insertOrderedList', false)}
+                            className="p-1 hover:bg-slate-100 rounded text-[11px] text-slate-700 font-bold transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Numbered List"
+                          >
+                            1.
+                          </button>
+                          <button
+                            onClick={() => document.execCommand('insertUnorderedList', false)}
+                            className="p-1 hover:bg-slate-100 rounded text-[11px] text-slate-700 font-bold transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                            title="Bulleted List"
+                          >
+                            •
+                          </button>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-4 w-px bg-slate-200 mx-1"></div>
+
+                        {/* Clear formatting */}
+                        <button
+                          onClick={() => document.execCommand('removeFormat', false)}
+                          className="p-1 hover:bg-slate-100 text-red-500 hover:text-red-600 rounded text-[10px] font-extrabold transition-colors w-6 h-6 flex items-center justify-center border border-slate-100 hover:border-slate-200 shadow-3xs"
+                          title="Clear Formatting"
+                        >
+                          T🗙
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Interactive Google Docs Style Document Ruler */}
+                    <div 
+                      ref={rulerRef}
+                      className="w-full h-5 bg-slate-50 border-x border-b border-slate-200 text-[8px] text-slate-400 relative select-none flex items-center font-mono font-bold shrink-0"
                     >
+                      {/* Minor tick marks (each 5% interval) */}
+                      {Array.from({ length: 21 }).map((_, idx) => {
+                        const pct = idx * 5
+                        return (
+                          <div 
+                            key={idx} 
+                            className="absolute bottom-0 w-px bg-slate-300"
+                            style={{ 
+                              left: `${pct}%`, 
+                              height: idx % 2 === 0 ? '6px' : '3px' 
+                            }}
+                          ></div>
+                        )
+                      })}
+
+                      {/* Major Inch Indicators */}
+                      <div className="absolute left-[12.5%] -translate-x-1/2 bottom-1 leading-none">1</div>
+                      <div className="absolute left-[25.0%] -translate-x-1/2 bottom-1 leading-none">2</div>
+                      <div className="absolute left-[37.5%] -translate-x-1/2 bottom-1 leading-none">3</div>
+                      <div className="absolute left-[50.0%] -translate-x-1/2 bottom-1 leading-none">4</div>
+                      <div className="absolute left-[62.5%] -translate-x-1/2 bottom-1 leading-none">5</div>
+                      <div className="absolute left-[75.0%] -translate-x-1/2 bottom-1 leading-none">6</div>
+                      <div className="absolute left-[87.5%] -translate-x-1/2 bottom-1 leading-none">7</div>
+
+                      {/* Left Indent Handle (Blue Slider) */}
+                      <div 
+                        onMouseDown={handleLeftMouseDown}
+                        className="absolute bottom-0 w-2.5 h-3 bg-blue-500 hover:bg-blue-600 rounded-sm cursor-ew-resize z-20 flex items-center justify-center shadow-xs transition-colors translate-y-[2px]"
+                        style={{ left: `${rulerLeftIndent}px` }}
+                        title="Drag to Adjust Left Padding Margin"
+                      >
+                        <div className="w-0.5 h-1 bg-white rounded-full"></div>
+                      </div>
+
+                      {/* Right Indent Handle (Blue Slider) */}
+                      <div 
+                        onMouseDown={handleRightMouseDown}
+                        className="absolute bottom-0 w-2.5 h-3 bg-blue-500 hover:bg-blue-600 rounded-sm cursor-ew-resize z-20 flex items-center justify-center shadow-xs transition-colors translate-y-[2px]"
+                        style={{ right: `${rulerRightIndent}px` }}
+                        title="Drag to Adjust Right Padding Margin"
+                      >
+                        <div className="w-0.5 h-1 bg-white rounded-full"></div>
+                      </div>
+                    </div>
+
+                    {/* Zoom Scaling Container Wrapper */}
+                    <div 
+                      className="w-full flex justify-center transition-all duration-300"
+                      style={{ 
+                        transform: `scale(${zoomScale})`, 
+                        transformOrigin: 'top center',
+                        marginBottom: zoomScale !== '1.0' ? `${(parseFloat(zoomScale) - 1.0) * 1056}px` : '0px'
+                      }}
+                    >
+                      {/* A4 Page Layout Design - Structured "Classic Professional" Canvas */}
+                      <div
+                        ref={documentDivRef}
+                        className={`w-full max-w-4xl bg-white shadow-xl ${canvasFont} text-slate-800 text-left block min-h-[1056px] focus:ring-0 focus:outline-none overflow-y-auto relative`}
+                        style={{ 
+                          outline: 'none',
+                          paddingLeft: `${rulerLeftIndent}px`,
+                          paddingRight: `${rulerRightIndent}px`,
+                          paddingTop: canvasPadding === 'p-6' ? '24px' : canvasPadding === 'p-8' ? '32px' : canvasPadding === 'p-12' ? '48px' : '64px',
+                          paddingBottom: canvasPadding === 'p-6' ? '24px' : canvasPadding === 'p-8' ? '32px' : canvasPadding === 'p-12' ? '48px' : '64px',
+                          lineHeight: lineSpacing
+                        }}
+                      >
                       {!resumeText.trim() ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center select-none bg-slate-50/25 font-sans">
                           <div className="max-w-md space-y-4">
@@ -2851,6 +3128,7 @@ export default function App() {
                       </div>
                     </>
                   )}
+                  </div>
                   </div>
 
                     <p className="text-[10px] text-center text-slate-400 py-4 select-none">
