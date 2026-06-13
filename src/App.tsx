@@ -805,6 +805,8 @@ export default function App() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [isParserSimulatorEnabled, setIsParserSimulatorEnabled] = useState(false)
   const [activeAtsPopover, setActiveAtsPopover] = useState<'header' | 'job1' | 'job2' | null>(null)
+  const [layoutCompression, setLayoutCompression] = useState(0) // 0 to 100% compression
+  const [overflowLines, setOverflowLines] = useState(0) // dynamic calculated overflow lines
   
   const rulerRef = useRef<HTMLDivElement>(null)
 
@@ -1452,6 +1454,30 @@ export default function App() {
     setResumeData(nextData)
     lastSavedDataRef.current = nextData
   }
+
+  // Dynamic A4 Page Boundary Live Guardian Height Tracker
+  useEffect(() => {
+    const measureHeight = () => {
+      if (documentDivRef.current) {
+        const scrollH = documentDivRef.current.scrollHeight
+        const targetH = 1056 // exactly 11 inches at 96 DPI
+        if (scrollH > targetH) {
+          const overPx = scrollH - targetH
+          const baseSpacingVal = parseFloat(lineSpacing)
+          const compRatio = layoutCompression / 100
+          const compressedSpacingVal = baseSpacingVal - compRatio * (baseSpacingVal - 0.95)
+          const estLineHeight = compressedSpacingVal * 16.5
+          setOverflowLines(Math.max(1, Math.ceil(overPx / estLineHeight)))
+        } else {
+          setOverflowLines(0)
+        }
+      }
+    }
+    // Measure immediately and run a tiny timeout to capture post-rendering offsets
+    measureHeight()
+    const timer = setTimeout(measureHeight, 100)
+    return () => clearTimeout(timer)
+  }, [resumeData, layoutCompression, lineSpacing, canvasPadding, canvasFont, view])
 
   // Synchronize history ref on results view load
   useEffect(() => {
@@ -2457,7 +2483,7 @@ export default function App() {
                   <div className="h-4 w-px bg-slate-200"></div>
 
                   {/* ATS Parser Simulator Mode Toggle */}
-                  <div className="flex items-center gap-1.5 mr-1">
+                  <div className="flex items-center gap-1.5">
                     <span className="text-slate-500 font-semibold select-none whitespace-nowrap">Recruiter Eye:</span>
                     <button
                       onClick={() => setIsParserSimulatorEnabled(!isParserSimulatorEnabled)}
@@ -2467,6 +2493,28 @@ export default function App() {
                       <Eye className={`w-3 h-3 ${isParserSimulatorEnabled ? 'text-indigo-500' : 'text-slate-400'}`} />
                       <span>{isParserSimulatorEnabled ? 'SCANNING' : 'OFF'}</span>
                     </button>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-4 w-px bg-slate-200"></div>
+
+                  {/* Page-Boundary Compressor Slider */}
+                  <div className="flex items-center gap-1.5 mr-1">
+                    <span className="text-slate-500 font-semibold select-none whitespace-nowrap">📐 Fit-to-Page:</span>
+                    <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded px-2 py-0.5 shadow-2xs">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={layoutCompression}
+                        onChange={(e) => setLayoutCompression(parseInt(e.target.value))}
+                        className="w-16 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600 outline-none"
+                        title="Drag to dynamically compress/squeeze your document layout to fit a single page"
+                      />
+                      <span className="font-mono text-[9px] font-extrabold text-slate-700 w-6 text-right">
+                        {layoutCompression}%
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -2693,16 +2741,40 @@ export default function App() {
                       {/* A4 Page Layout Design - Structured "Classic Professional" Canvas */}
                       <div
                         ref={documentDivRef}
-                        className={`w-full max-w-4xl bg-white shadow-xl ${canvasFont} text-slate-800 text-left block min-h-[1056px] focus:ring-0 focus:outline-none overflow-y-auto relative`}
+                        className={`w-full max-w-4xl bg-white shadow-xl ${canvasFont} text-slate-800 text-left block min-h-[1056px] focus:ring-0 focus:outline-none overflow-y-auto relative transition-all duration-150`}
                         style={{ 
                           outline: 'none',
                           paddingLeft: `${rulerLeftIndent}px`,
                           paddingRight: `${rulerRightIndent}px`,
-                          paddingTop: canvasPadding === 'p-6' ? '24px' : canvasPadding === 'p-8' ? '32px' : canvasPadding === 'p-12' ? '48px' : '64px',
-                          paddingBottom: canvasPadding === 'p-6' ? '24px' : canvasPadding === 'p-8' ? '32px' : canvasPadding === 'p-12' ? '48px' : '64px',
-                          lineHeight: lineSpacing
+                          paddingTop: `${(canvasPadding === 'p-6' ? 24 : canvasPadding === 'p-8' ? 32 : canvasPadding === 'p-12' ? 48 : 64) - (layoutCompression / 100) * ((canvasPadding === 'p-6' ? 24 : canvasPadding === 'p-8' ? 32 : canvasPadding === 'p-12' ? 48 : 64) - 18)}px`,
+                          paddingBottom: `${(canvasPadding === 'p-6' ? 24 : canvasPadding === 'p-8' ? 32 : canvasPadding === 'p-12' ? 48 : 64) - (layoutCompression / 100) * ((canvasPadding === 'p-6' ? 24 : canvasPadding === 'p-8' ? 32 : canvasPadding === 'p-12' ? 48 : 64) - 18)}px`,
+                          lineHeight: `${parseFloat(lineSpacing) - (layoutCompression / 100) * (parseFloat(lineSpacing) - 0.95)}`,
+                          fontSize: `${1.0 - (layoutCompression / 100) * 0.12}em`
                         }}
                       >
+                        {/* Page-Boundary Guardian Guideline */}
+                        {resumeText.trim() && (
+                          overflowLines > 0 ? (
+                            <div className="absolute left-0 right-0 border-t-2 border-dashed border-red-500/80 z-40 pointer-events-none select-none print:hidden flex justify-between items-center px-4" style={{ top: '1054px', height: '1px' }}>
+                              <span className="bg-red-500 text-white font-mono font-bold text-[8px] px-2 py-0.5 rounded shadow-sm animate-pulse tracking-widest uppercase">
+                                ⚠️ PAGE BOUNDARY OVERFLOW: {overflowLines} LINE{overflowLines > 1 ? 'S' : ''}
+                              </span>
+                              <span className="text-red-500 font-mono font-bold text-[8px] bg-white px-1">
+                                11.0" A4 THRESHOLD
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="absolute left-0 right-0 border-t-2 border-dashed border-emerald-500/80 z-40 pointer-events-none select-none print:hidden flex justify-between items-center px-4" style={{ top: '1054px', height: '1px' }}>
+                              <span className="bg-emerald-500 text-white font-mono font-bold text-[8px] px-2 py-0.5 rounded shadow-sm tracking-widest uppercase">
+                                🎉 PAGE COHESION: 100% PERFECT FIT
+                              </span>
+                              <span className="text-emerald-500 font-mono font-bold text-[8px] bg-white px-1">
+                                A4 SINGLE PAGE BOUNDARY
+                              </span>
+                            </div>
+                          )
+                        )}
+
                       {!resumeText.trim() ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center select-none bg-slate-50/25 font-sans">
                           <div className="max-w-md space-y-4">
