@@ -2858,37 +2858,37 @@ export default function App() {
                                   {resumeData.job3Company}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <div 
-                                  className={`text-sm font-semibold text-right cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors focus:outline-none ${ACCENT_STYLES[canvasAccent].sub}`} 
-                                  contentEditable 
-                                  suppressContentEditableWarning
-                                  onFocus={() => setFocusedField('job3Dates')}
-                                  onBlur={(e) => {
-                                      setFocusedField(null)
-                                      handleFieldChange('job3Dates', e.currentTarget.innerText)
-                                    }}
-                                >
-                                  {resumeData.job3Dates}
-                                </div>
-                                <button
-                                  onClick={() => {
-                                    applyDataChangeWithHistory(prev => ({
-                                      ...prev,
-                                      showJob3: false,
-                                      job3Title: '',
-                                      job3Company: '',
-                                      job3Dates: '',
-                                      job3Location: '',
-                                      job3Bullets: []
-                                    }))
+                              <div 
+                                className={`text-sm font-semibold text-right cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors focus:outline-none ${ACCENT_STYLES[canvasAccent].sub}`} 
+                                contentEditable 
+                                suppressContentEditableWarning
+                                onFocus={() => setFocusedField('job3Dates')}
+                                onBlur={(e) => {
+                                    setFocusedField(null)
+                                    handleFieldChange('job3Dates', e.currentTarget.innerText)
                                   }}
-                                  className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 text-xs font-bold px-2 py-0.5 rounded hover:bg-slate-100 transition-colors cursor-pointer select-none outline-none"
-                                  title="Remove Role"
-                                >
-                                  ✕
-                                </button>
+                              >
+                                {resumeData.job3Dates}
                               </div>
+
+                              {/* Absolute Positioned Remove Role Gutter Button */}
+                              <button
+                                onClick={() => {
+                                  applyDataChangeWithHistory(prev => ({
+                                    ...prev,
+                                    showJob3: false,
+                                    job3Title: '',
+                                    job3Company: '',
+                                    job3Dates: '',
+                                    job3Location: '',
+                                    job3Bullets: []
+                                  }))
+                                }}
+                                className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 text-xs font-bold w-5 h-5 flex items-center justify-center rounded hover:bg-slate-100 transition-all cursor-pointer select-none outline-none absolute -right-6 top-1"
+                                title="Remove Role"
+                              >
+                                ✕
+                              </button>
                             </div>
                             <div 
                               className="text-xs text-slate-400 italic mb-1 cursor-text focus:bg-slate-50/50 p-1 rounded transition-colors focus:outline-none" 
