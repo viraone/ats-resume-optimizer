@@ -19,6 +19,7 @@ import {
   Settings,
   Bell,
   AlertCircle,
+  AlertTriangle,
   ArrowLeft,
   CheckCircle2,
   Copy,
@@ -803,6 +804,7 @@ export default function App() {
   const [optimizingStep, setOptimizingStep] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
   const [isParserSimulatorEnabled, setIsParserSimulatorEnabled] = useState(false)
+  const [activeAtsPopover, setActiveAtsPopover] = useState<'header' | 'job1' | 'job2' | null>(null)
   
   const rulerRef = useRef<HTMLDivElement>(null)
 
@@ -2731,12 +2733,59 @@ export default function App() {
                               : ''
                           }`}>
                             {isParserSimulatorEnabled && (
-                              <div className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-10 ${
-                                !appliedFixes.includes('header')
-                                  ? 'bg-red-500 text-white animate-pulse'
-                                  : 'bg-emerald-500 text-white'
-                              }`}>
+                              <div 
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setActiveAtsPopover(activeAtsPopover === 'header' ? null : 'header')
+                                }}
+                                className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-40 cursor-pointer transition-all hover:scale-102 hover:shadow-md ${
+                                  !appliedFixes.includes('header')
+                                    ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                                    : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                }`}
+                                title="Click to view ATS parser feedback"
+                              >
                                 {`[ATS Node: Contact Header | Status: ${!appliedFixes.includes('header') ? 'FRAGMENTED IDENTITY' : 'VERIFIED OPTIMIZED'} | Conf: ${!appliedFixes.includes('header') ? '45%' : '99.8%'}]`}
+                              </div>
+                            )}
+
+                            {isParserSimulatorEnabled && activeAtsPopover === 'header' && (
+                              <div className="absolute left-2 top-4 z-50 bg-white border border-slate-200 rounded-xl shadow-xl p-4 w-72 text-left animate-fadeIn">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                    <span>ATS Audit Details</span>
+                                  </div>
+                                  <button 
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setActiveAtsPopover(null)
+                                    }}
+                                    className="text-slate-400 hover:text-slate-600 text-[10px] font-bold outline-none"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                                <p className="text-[11px] text-slate-600 mt-2 leading-relaxed">
+                                  Identity Layout Discrepancy: Found duplicate identity blocks or mismatching contact text configurations inside the experience sections.
+                                </p>
+                                {!appliedFixes.includes('header') ? (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleCleanHeader()
+                                      setActiveAtsPopover(null)
+                                    }}
+                                    className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 underline flex items-center gap-0.5 mt-2.5 cursor-pointer outline-none bg-transparent border-0"
+                                  >
+                                    ⚡ Quick Fix
+                                  </button>
+                                ) : (
+                                  <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 mt-2.5">
+                                    <Check className="w-3 h-3" />
+                                    <span>Optimized</span>
+                                  </div>
+                                )}
                               </div>
                             )}
                         <h1 
@@ -2835,14 +2884,62 @@ export default function App() {
                             : ''
                         }`}>
                           {isParserSimulatorEnabled && (
-                            <div className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-10 ${
-                              job1Status === 'OPTIMIZED'
-                                ? 'bg-emerald-500 text-white'
-                                : job1Status === 'SEMANTIC_GAPS'
-                                  ? 'bg-amber-500 text-white animate-pulse'
-                                  : 'bg-red-500 text-white animate-pulse'
-                            }`}>
+                            <div 
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setActiveAtsPopover(activeAtsPopover === 'job1' ? null : 'job1')
+                              }}
+                              className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-40 cursor-pointer transition-all hover:scale-102 hover:shadow-md ${
+                                job1Status === 'OPTIMIZED'
+                                  ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                  : job1Status === 'SEMANTIC_GAPS'
+                                    ? 'bg-amber-500 hover:bg-amber-600 text-white animate-pulse'
+                                    : 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                              }`}
+                              title="Click to view ATS parser feedback"
+                            >
                               {`[ATS Node: Experience Row 1 | Status: ${job1Status} | Gaps: ${2 - job1FixedCount}/2 | Conf: ${job1Status === 'OPTIMIZED' ? '98%' : job1Status === 'SEMANTIC_GAPS' ? '70%' : '35%'}]`}
+                            </div>
+                          )}
+
+                          {isParserSimulatorEnabled && activeAtsPopover === 'job1' && (
+                            <div className="absolute left-2 top-4 z-50 bg-white border border-slate-200 rounded-xl shadow-xl p-4 w-72 text-left animate-fadeIn">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                  <span>ATS Audit Details</span>
+                                </div>
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setActiveAtsPopover(null)
+                                  }}
+                                  className="text-slate-400 hover:text-slate-600 text-[10px] font-bold outline-none"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                              <p className="text-[11px] text-slate-600 mt-2 leading-relaxed">
+                                Semantic Gap: Experience bullet list is missing critical industry metric standards: 'Club Lounge Monitoring' and 'Safety Compliance' standards.
+                              </p>
+                              {job1Status !== 'OPTIMIZED' ? (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    if (!appliedFixes.includes('loungeMonitoring')) handleInjectLoungeMonitoring()
+                                    if (!appliedFixes.includes('safetyCompliance')) handleInjectSafetyCompliance()
+                                    setActiveAtsPopover(null)
+                                  }}
+                                  className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 underline flex items-center gap-0.5 mt-2.5 cursor-pointer outline-none bg-transparent border-0"
+                                >
+                                  ⚡ Quick Fix
+                                </button>
+                              ) : (
+                                <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 mt-2.5">
+                                  <Check className="w-3 h-3" />
+                                  <span>Optimized</span>
+                                </div>
+                              )}
                             </div>
                           )}
                           {/* Dynamic left accent indicator bar for interactive editing focus */}
@@ -3198,14 +3295,63 @@ export default function App() {
                             : ''
                         }`}>
                           {isParserSimulatorEnabled && (
-                            <div className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-10 ${
-                              job2Status === 'OPTIMIZED'
-                                ? 'bg-emerald-500 text-white'
-                                : job2Status === 'SEMANTIC_GAPS'
-                                  ? 'bg-amber-500 text-white animate-pulse'
-                                  : 'bg-red-500 text-white animate-pulse'
-                            }`}>
+                            <div 
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setActiveAtsPopover(activeAtsPopover === 'job2' ? null : 'job2')
+                              }}
+                              className={`absolute left-2 -top-3 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase select-none tracking-wider z-40 cursor-pointer transition-all hover:scale-102 hover:shadow-md ${
+                                job2Status === 'OPTIMIZED'
+                                  ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                  : job2Status === 'SEMANTIC_GAPS'
+                                    ? 'bg-amber-500 hover:bg-amber-600 text-white animate-pulse'
+                                    : 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                              }`}
+                              title="Click to view ATS parser feedback"
+                            >
                               {`[ATS Node: Experience Row 3 | Status: ${job2Status} | Gaps: ${2 - job2FixedCount}/2 | Conf: ${job2Status === 'OPTIMIZED' ? '98%' : job2Status === 'SEMANTIC_GAPS' ? '70%' : '35%'}]`}
+                            </div>
+                          )}
+
+                          {isParserSimulatorEnabled && activeAtsPopover === 'job2' && (
+                            <div className="absolute left-2 top-4 z-50 bg-white border border-slate-200 rounded-xl shadow-xl p-4 w-72 text-left animate-fadeIn">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                  <span>ATS Audit Details</span>
+                                </div>
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setActiveAtsPopover(null)
+                                  }}
+                                  className="text-slate-400 hover:text-slate-600 text-[10px] font-bold outline-none"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                              <p className="text-[11px] text-slate-600 mt-2 leading-relaxed">
+                                Semantic Gap: Experience bullet list is missing critical operational checklists and hospitality action swaps: 'Operational Checklists' and action words.
+                              </p>
+                              {job2Status !== 'OPTIMIZED' ? (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    if (!appliedFixes.includes('loungeChecklists')) handleInjectLoungeChecklists()
+                                    if (!appliedFixes.includes('swapAnticipate')) handleSwapAnticipate()
+                                    if (!appliedFixes.includes('swapAssets')) handleSwapAssets()
+                                    setActiveAtsPopover(null)
+                                  }}
+                                  className="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 underline flex items-center gap-0.5 mt-2.5 cursor-pointer outline-none bg-transparent border-0"
+                                >
+                                  ⚡ Quick Fix
+                                </button>
+                              ) : (
+                                <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 mt-2.5">
+                                  <Check className="w-3 h-3" />
+                                  <span>Optimized</span>
+                                </div>
+                              )}
                             </div>
                           )}
                           {/* Dynamic left accent indicator bar for interactive editing focus */}
